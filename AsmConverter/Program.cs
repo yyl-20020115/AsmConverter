@@ -75,11 +75,18 @@ namespace AsmConverter
             var lineno = 0;
             using var InputReader = new StreamReader(fi.FullName);
             using var OutputWriter = new StreamWriter(fo.FullName);
+            var emptyline = false;
             while (InputReader.ReadLine() is string line)
             {
+                line = line.Trim();
+                emptyline = line.Length == 0;
                 lineno++;
 
 
+            }
+            if (!emptyline)
+            {
+                OutputWriter.WriteLine();//should be end with an empty line
             }
         }
         public static void ConvertFromATT_ToIntel(FileInfo fi, FileInfo fo)
@@ -194,17 +201,17 @@ namespace AsmConverter
                                 }
                                 else //not register
                                 {
-                                    var section = "";
+                                    var sectionRegister = "";
                                     var operandTrimmeds = operandTrimmed;
                                     int colonIndex = operandTrimmed.IndexOf(':');
                                     if (colonIndex >= 0)
                                     {
-                                        section = operandTrimmed[..colonIndex];
-                                        if (section.StartsWith("%") &&
-                                            (section[1..] is String segmentTrimmed)
-                                            && Instructions.NasmRegisters.Contains(segmentTrimmed))
+                                        var sr = operandTrimmed[..colonIndex];
+                                        if (sr.StartsWith("%") &&
+                                            (sr[1..] is String srt)
+                                            && Instructions.NasmRegisters.Contains(srt))
                                         {
-                                            section = segmentTrimmed;
+                                            sectionRegister = srt + ":";
                                         }
                                         operandTrimmeds = operandTrimmed[(colonIndex + 1)..];
                                     }
@@ -222,12 +229,12 @@ namespace AsmConverter
                                     {
                                         var operandPartWorking = operandPart;
                                         if(operandPartWorking.StartsWith("%") && 
-                                            operandPartWorking.Substring(1) is string operandPartTrimmed
+                                            operandPartWorking[1..] is string operandPartTrimmed
                                             && Instructions.NasmRegisters.Contains(operandPartTrimmed))
                                         {
                                             operandsList.Add(operandPartTrimmed);
                                         }else if(operandPartWorking.StartsWith("$")&&
-                                            (operandPartWorking.Substring(1) is string immediateNumberTrimmed))
+                                            (operandPartWorking[1..] is string immediateNumberTrimmed))
                                         {
                                             operandsList.Add(immediateNumberTrimmed);
                                         }
@@ -257,9 +264,7 @@ namespace AsmConverter
                                         || operandsSplitted.Parts.Count>1)
                                     {
                                         operandTrimmed =
-                                           "[" + (section.Length == 0 ? string.Empty:(section + ":")) 
-                                            + operandTrimmeds 
-                                            + "]";
+                                           "[" + sectionRegister + operandTrimmeds + "]";
                                     }
                                     else
                                     {

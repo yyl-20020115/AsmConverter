@@ -6,8 +6,16 @@ using System.Threading.Tasks;
 
 namespace AsmConverter
 {
-    public static class Instructions
-    {
+	public static class Instructions
+	{
+		public static readonly HashSet<string> SegmentRegisters = new(){
+			"cs",
+			"ds",
+			"es",
+			"fs",
+			"gs",
+
+		};
 		public static readonly HashSet<string> NasmRegisters = new ()
 		{
 			"al",
