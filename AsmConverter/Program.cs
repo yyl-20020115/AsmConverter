@@ -1,6 +1,4 @@
-﻿// See https://aka.ms/new-console-template for more information
-
-using System.Text;
+﻿using System.Text;
 
 namespace AsmConverter
 {
@@ -74,26 +72,34 @@ namespace AsmConverter
         }
         public static void ConvertFromIntel_ToATT(FileInfo fi, FileInfo fo)
         {
-            //TODO:
+            var lineno = 0;
+            using var InputReader = new StreamReader(fi.FullName);
+            using var OutputWriter = new StreamWriter(fo.FullName);
+            while (InputReader.ReadLine() is string line)
+            {
+                lineno++;
+
+
+            }
         }
         public static void ConvertFromATT_ToIntel(FileInfo fi, FileInfo fo)
         {
-            var lineno = 1;
+            var lineno = 0;
             using var InputReader = new StreamReader(fi.FullName);  
             using var OutputWriter = new StreamWriter(fo.FullName);
             while(InputReader.ReadLine() is string line)
             {
             do_line:
                 lineno++;
-                var el = "";
+                var lineEnding = "";
                 var sp = line.IndexOfAny(new [] { '#', ';' });
                 if (sp >= 0)
                 {
-                    el = line[sp..];
+                    lineEnding = line[sp..];
                     line = line[..sp];
-                    if (el.StartsWith('#'))
+                    if (lineEnding.StartsWith('#'))
                     {
-                        el = ';' + el;
+                        lineEnding = ';' + lineEnding;
                     }
                 }
                 var result = line.Trim();
@@ -101,7 +107,7 @@ namespace AsmConverter
                 var pre = line.IndexOf(result) is int ep && ep >=0 ? line[..ep] : "";
                 if (result.Length == 0)
                 {
-                    OutputWriter.WriteLine(line + el);
+                    OutputWriter.WriteLine(line + lineEnding);
                     continue;
                 }
                 else if(result.IndexOf(':') is int p && p>=0)
@@ -112,7 +118,7 @@ namespace AsmConverter
                     }
                     else
                     {
-                        OutputWriter.WriteLine(result[..(p + 1)] + el);
+                        OutputWriter.WriteLine(result[..(p + 1)] + lineEnding);
                         line = result[(p + 1)..];
                         goto do_line;
                     }
@@ -128,35 +134,35 @@ namespace AsmConverter
                     {
                         var far = false;
                         var star = false;
-                        var ins = "";
-                        var ops = "";
+                        var instr = "";
+                        var operands = "";
                         var i = IndexOfWhitespace(result);
                         if (i < 0)
                         {
-                            ins = result; //whole instruction
+                            instr = result; //whole instruction
                         }
                         else
                         {
-                            ins = result[..i]; //partial
-                            ops = result[(i + 1)..];
+                            instr = result[..i]; //partial
+                            operands = result[(i + 1)..];
                         }
-                        var inslower = ins.ToLower();
-                        var oprs = OperandSize.Byte;
+                        var instrLower = instr.ToLower();
+                        var operandSize = OperandSize.Byte;
 
-                        if (inslower == "ljmp"|| inslower == "lcall" || inslower=="lret")
+                        if (instrLower == "ljmp"|| instrLower == "lcall" || instrLower=="lret")
                         {
-                            inslower = inslower[1..];
-                            ins = ins[1..];
+                            instrLower = instrLower[1..];
+                            instr = instr[1..];
                             far = true;
-                            if (inslower != "lret") star = true;
+                            if (instrLower != "lret") star = true;
                         }
 
-                        if (inslower.EndsWith('b')|| inslower.EndsWith('w')|| inslower.EndsWith('l')|| inslower.EndsWith('q'))
+                        if (instrLower.EndsWith('b')|| instrLower.EndsWith('w')|| instrLower.EndsWith('l')|| instrLower.EndsWith('q'))
                         {
-                            if (Instructions.NasmInstructionNames.Contains(inslower[..^1]))
+                            if (Instructions.NasmInstructionNames.Contains(instrLower[..^1]))
                             {
-                                inslower = inslower[..^1];
-                                oprs = inslower[^1] switch
+                                instrLower = instrLower[..^1];
+                                operandSize = instrLower[^1] switch
                                 {
                                     'b' => OperandSize.Byte,
                                     'w' => OperandSize.Word,
@@ -164,129 +170,124 @@ namespace AsmConverter
                                     'q' => OperandSize.Quad,
                                     _ =>OperandSize.Unknown
                                 };
-                                ins = ins[..^1];
+                                instr = instr[..^1];
                             }
                         }    
 
-                        //try opcode
-                        if(Instructions.NasmInstructionNames.Contains(inslower))
+                        if(Instructions.NasmInstructionNames.Contains(instrLower))
                         {
-                            var pts = Split(ops, ',');
-                            var rts = new List<string>();
+                            var operandsParts = Split(operands, ',');
+                            var operandsTransformed = new List<string>();
 
-                            foreach(var pt in pts.Parts)
+                            foreach(var operand in operandsParts.Parts)
                             {
-                                var rpt = pt.Trim();
-                                if (rpt.StartsWith('$'))
+                                var operandTrimmed = operand.Trim();
+                                if (operandTrimmed.StartsWith('$'))
                                 {                                    
-                                    rts.Add(rpt[1..].Trim());
+                                    operandsTransformed.Add(operandTrimmed[1..].Trim());
                                 }
-                                else if (rpt.StartsWith("%") && 
-                                    (rpt[1..].Trim().ToLower() is string rgt) 
+                                else if (operandTrimmed.StartsWith("%") && 
+                                    (operandTrimmed[1..].Trim().ToLower() is string rgt) 
                                     && Instructions.NasmRegisters.Contains(rgt))
                                 {
-                                    rts.Add(rgt);
+                                    operandsTransformed.Add(rgt);
                                 }
                                 else //not register
                                 {
-                                    var seg = "";
-                                    var opm = rpt;
-                                    int pi = rpt.IndexOf(':');
-                                    if (pi >= 0)
+                                    var section = "";
+                                    var operandTrimmeds = operandTrimmed;
+                                    int colonIndex = operandTrimmed.IndexOf(':');
+                                    if (colonIndex >= 0)
                                     {
-                                        seg = rpt[..pi];
-                                        if (seg.StartsWith("%") &&
-                                            (seg[1..] is String stg)
-                                            && Instructions.NasmRegisters.Contains(stg))
+                                        section = operandTrimmed[..colonIndex];
+                                        if (section.StartsWith("%") &&
+                                            (section[1..] is String segmentTrimmed)
+                                            && Instructions.NasmRegisters.Contains(segmentTrimmed))
                                         {
-                                            seg = stg;
+                                            section = segmentTrimmed;
                                         }
-                                        opm = rpt[(pi + 1)..];
+                                        operandTrimmeds = operandTrimmed[(colonIndex + 1)..];
                                     }
                                     var disp = "";
-                                    int po = opm.IndexOf('(');
-                                    if(po>=0 && opm.EndsWith(')'))
+                                    int po = operandTrimmeds.IndexOf('(');
+                                    if(po>=0 && operandTrimmeds.EndsWith(')'))
                                     {
-                                        disp = opm[..po];
-                                        opm = opm[po..];
+                                        disp = operandTrimmeds[..po];
+                                        operandTrimmeds = operandTrimmeds[po..];
                                     }
                                     //opm = base, index, scale
-                                    var opp = new List<string>();
-                                    var opn = Split(opm, keep_bound: false);
-                                    foreach(var opu in opn.Parts)
+                                    var operandsList = new List<string>();
+                                    var operandsSplitted = Split(operandTrimmeds, keep_bound: false);
+                                    foreach(var operandPart in operandsSplitted.Parts)
                                     {
-                                        var opw = opu;
-                                        if(opw.StartsWith("%") && 
-                                            opw.Substring(1) is string opa
-                                            && Instructions.NasmRegisters.Contains(opa))
+                                        var operandPartWorking = operandPart;
+                                        if(operandPartWorking.StartsWith("%") && 
+                                            operandPartWorking.Substring(1) is string operandPartTrimmed
+                                            && Instructions.NasmRegisters.Contains(operandPartTrimmed))
                                         {
-                                            opp.Add(opa);
-                                        }else if(opw.StartsWith("$")&&
-                                            (opw.Substring(1) is string opb))
+                                            operandsList.Add(operandPartTrimmed);
+                                        }else if(operandPartWorking.StartsWith("$")&&
+                                            (operandPartWorking.Substring(1) is string immediateNumberTrimmed))
                                         {
-                                            opp.Add(opb);
+                                            operandsList.Add(immediateNumberTrimmed);
                                         }
                                         else
                                         {
-                                            opp.Add(opu);
+                                            operandsList.Add(operandPart);
                                         }
                                     }
                                     //section:disp(base, index, scale) 
-                                    //section:[base + index*scale + disp] 
+                                    //[section:base + index*scale + disp] 
 
-                                    if (opp.Count == 1)
+                                    if (operandsList.Count == 1)
                                     {
-                                        opm = opp[0];
+                                        operandTrimmeds = operandsList[0];
                                     }
-                                    else if (opp.Count == 3)
+                                    else if (operandsList.Count == 3)
                                     {
-                                        opm = opp[0];
-                                        opm += opm.Length > 0 ? " + " : "";
-                                        opm += opp[1] +" * " + opp[2];
+                                        operandTrimmeds = operandsList[0];
+                                        operandTrimmeds += operandTrimmeds.Length == 0 ? String.Empty : " + ";
+                                        operandTrimmeds += operandsList[1] + " * " + operandsList[2];
                                     }
                                     if (disp.Length > 0)
                                     {
-                                        opm += disp.StartsWith("-") ? (" - "+ disp[1..]) : (" + " + disp);
+                                        operandTrimmeds += disp.StartsWith("-") ? (" - "+ disp[1..]) : (" + " + disp);
                                     }
-                                    if (opn.Enclosed || opn.Parts.Count>1)
+                                    if (operandsSplitted.Enclosed 
+                                        || operandsSplitted.Parts.Count>1)
                                     {
-                                        opm = "[" + opm + "]";
-                                        if (seg.Length > 0)
-                                        {
-                                            rpt = seg + ":" + opm;
-                                        }
-                                        else
-                                        {
-                                            rpt = opm;
-                                        }
+                                        operandTrimmed =
+                                           "[" + (section.Length == 0 ? string.Empty:(section + ":")) 
+                                            + operandTrimmeds 
+                                            + "]";
                                     }
                                     else
                                     {
-                                        rpt = opm;
+                                        operandTrimmed = operandTrimmeds;
                                     }
 
-                                    rts.Add(rpt);
+                                    operandsTransformed.Add(operandTrimmed);
                                 }
                             }
 
                             if (far)
                             {
-                                if(rts.Count == 1)
+                                if(operandsTransformed.Count == 1)
                                 {
-                                    line = pre + ins + " far " + rts[0];
+                                    line = pre + instr + " far " + operandsTransformed[0];
                                 }
-                                else if(rts.Count == 2)
+                                else if(operandsTransformed.Count == 2)
                                 {
-                                    line = pre + ins + " far " + rts[0] + ":" + rts[1];
+                                    line = pre + instr + " far " + operandsTransformed[0] + ":" + operandsTransformed[1];
                                 }
                             }
                             else
                             {
-                                rts.Reverse();
-                                line = pre + ins;
-                                if (rts.Count > 0)
+                                operandsTransformed.Reverse();
+                                line = pre + instr;
+                                if (operandsTransformed.Count > 0)
                                 {
-                                    line += "\t" + rts.Aggregate((a, b) => a + ", " + b);
+                                    line += "\t" + operandsTransformed.Aggregate((a, b) => a + ", " + b);
                                 }
                             }
                         }
@@ -294,11 +295,10 @@ namespace AsmConverter
                         {
                             line = ";BAD " + line;
                         }
-
                     }
                 }
 
-                OutputWriter.WriteLine(line + el);
+                OutputWriter.WriteLine(line + lineEnding);
             }
         }
 
