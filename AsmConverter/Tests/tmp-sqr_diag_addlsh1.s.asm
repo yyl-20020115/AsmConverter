@@ -1,11 +1,11 @@
-	.text
-	.align	32, 0x90
-	.globl	__gmpn_sqr_diag_addlsh1
+	section .text
+	align 32, db 0x90
+	global __gmpn_sqr_diag_addlsh1
 	
-	.def	__gmpn_sqr_diag_addlsh1
-	.scl	2
-	.type	32
-	.endef
+	;.def	__gmpn_sqr_diag_addlsh1
+	;.scl	2
+	;.type	32
+	;.endef
 __gmpn_sqr_diag_addlsh1:
 
 	push	rdi
@@ -33,7 +33,7 @@ __gmpn_sqr_diag_addlsh1:
 	xor	ebx, ebx
 	jmp	Lmid
 
-	.align	16, 0x90
+	align 16, db 0x90
 Ltop:
 	add	r8, r10
 	adc	r9, rax
@@ -46,7 +46,7 @@ Lmid:
 	adc	r8, r8
 	adc	r9, r9
 	lea	r10, [(%rdx,%rbx)]
-;BAD 	setc	%bl
+	;BAD 	setc	%bl
 	mul	rax
 	add	rcx, 2
 	js	Ltop

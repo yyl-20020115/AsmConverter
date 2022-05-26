@@ -82,6 +82,7 @@ namespace AsmConverter
                 emptyline = line.Length == 0;
                 lineno++;
 
+                //TODO:
 
             }
             if (!emptyline)
@@ -94,6 +95,9 @@ namespace AsmConverter
             var lineno = 0;
             using var InputReader = new StreamReader(fi.FullName);  
             using var OutputWriter = new StreamWriter(fo.FullName);
+            var indef = false;
+            var outdef = false;
+            var lastpre = "";
             while(InputReader.ReadLine() is string line)
             {
             do_line:
@@ -127,6 +131,10 @@ namespace AsmConverter
                     {
                         OutputWriter.WriteLine(result[..(p + 1)] + lineEnding);
                         line = result[(p + 1)..];
+                        //if(pre.Length == 0 && lastpre.Length > 0)
+                        //{
+                        //    line = lastpre + line;
+                        //}
                         goto do_line;
                     }
                 }
@@ -134,6 +142,53 @@ namespace AsmConverter
                 {
                     if (result.StartsWith('.'))
                     {
+                        var resultLower = result.ToLower();
+
+                        if (!resultLower.StartsWith(".endef") && indef)
+                        {
+                            line = result.Trim();
+                        }
+                        else if (resultLower.StartsWith(".def")&& char.IsWhiteSpace(resultLower,".def".Length))
+                        {
+                            indef = true;
+                            outdef = false;
+                            line = result.Trim();
+                        }
+                        else if (resultLower.StartsWith(".endef"))
+                        {
+                            outdef = true;
+                            line = result.Trim();
+                        }
+                        else if (resultLower.StartsWith(".global") 
+                            || resultLower.StartsWith(".globl"))
+                        {
+                            int rp = IndexOfWhitespace(result);
+                            if (rp >= 0)
+                            {
+                                line =  "global " + result[rp..].Trim();
+                            }
+                        }
+                        else if(resultLower == ".text")
+                        {
+                            line = "section .text";
+                        }
+                        //align
+                        else if (resultLower.StartsWith(".align") && char.IsWhiteSpace(resultLower, ".align".Length))
+                        {
+                            var ps = resultLower[(".align".Length + 1)..].Trim();
+                            var ts = Split(ps);
+                            if (ts.Parts.Count >= 1)
+                            {
+                                if (ts.Parts.Count >= 2)
+                                {
+                                    line = "align " + ts.Parts[0] + $", db {ts.Parts[1]}";
+                                }
+                                else
+                                {
+                                    line = "align " + ts.Parts[0];
+                                }
+                            }
+                        }
                         //psedo
                         //copy for now
                     }
@@ -279,17 +334,17 @@ namespace AsmConverter
                             {
                                 if(operandsTransformed.Count == 1)
                                 {
-                                    line = pre + instr + " far " + operandsTransformed[0];
+                                    line = instr + " far " + operandsTransformed[0];
                                 }
                                 else if(operandsTransformed.Count == 2)
                                 {
-                                    line = pre + instr + " far " + operandsTransformed[0] + ":" + operandsTransformed[1];
+                                    line = instr + " far " + operandsTransformed[0] + ":" + operandsTransformed[1];
                                 }
                             }
                             else
                             {
                                 operandsTransformed.Reverse();
-                                line = pre + instr;
+                                line = instr;
                                 if (operandsTransformed.Count > 0)
                                 {
                                     line += "\t" + operandsTransformed.Aggregate((a, b) => a + ", " + b);
@@ -303,7 +358,9 @@ namespace AsmConverter
                     }
                 }
 
-                OutputWriter.WriteLine(line + lineEnding);
+                OutputWriter.WriteLine((indef ? pre + ";" : pre) + line + lineEnding);
+                if (outdef) outdef = indef = false;
+                lastpre = pre;
             }
         }
 

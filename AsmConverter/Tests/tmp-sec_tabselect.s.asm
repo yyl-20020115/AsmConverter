@@ -1,11 +1,11 @@
-	.text
-	.align	16, 0x90
-	.globl	__gmpn_sec_tabselect
+	section .text
+	align 16, db 0x90
+	global __gmpn_sec_tabselect
 	
-	.def	__gmpn_sec_tabselect
-	.scl	2
-	.type	32
-	.endef
+	;.def	__gmpn_sec_tabselect
+	;.scl	2
+	;.type	32
+	;.endef
 __gmpn_sec_tabselect:
 
 	push	rdi
@@ -15,7 +15,7 @@ __gmpn_sec_tabselect:
 	mov	rdx, r8
 	mov	rcx, r9
 
-	mov	%r8d, [rsp + 56]
+	mov	r8d, [rsp + 56]
 
 	add	rsp, -88
 	movdqu	[rsp], xmm6
@@ -41,7 +41,7 @@ Louter_top:
 	pxor	xmm5, xmm5
 	pxor	xmm6, xmm6
 	pxor	xmm7, xmm7
-	.align	16, 0x90
+	align 16, db 0x90
 Ltop:
 	movdqa	xmm0, xmm8
 	pcmpeqd	xmm0, xmm1
@@ -81,7 +81,7 @@ mov	r10, rcx
 	pxor	xmm1, xmm1
 	pxor	xmm4, xmm4
 	pxor	xmm5, xmm5
-	.align	16, 0x90
+	align 16, db 0x90
 Ltp4:
 	movdqa	xmm0, xmm8
 	pcmpeqd	xmm0, xmm1
@@ -108,7 +108,7 @@ mov	r10, rcx
 	mov	r11, rsi
 	pxor	xmm1, xmm1
 	pxor	xmm4, xmm4
-	.align	16, 0x90
+	align 16, db 0x90
 Ltp2:
 	movdqa	xmm0, xmm8
 	pcmpeqd	xmm0, xmm1
@@ -131,7 +131,7 @@ mov	r10, rcx
 	mov	r11, rsi
 	pxor	xmm1, xmm1
 	pxor	xmm4, xmm4
-	.align	16, 0x90
+	align 16, db 0x90
 Ltp1:
 	movdqa	xmm0, xmm8
 	pcmpeqd	xmm0, xmm1

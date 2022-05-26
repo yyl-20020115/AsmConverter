@@ -1,11 +1,11 @@
-	.text
-	.align	16, 0x90
-	.globl	__gmpn_mul_1c
+	section .text
+	align 16, db 0x90
+	global __gmpn_mul_1c
 	
-	.def	__gmpn_mul_1c
-	.scl	2
-	.type	32
-	.endef
+	;.def	__gmpn_mul_1c
+	;.scl	2
+	;.type	32
+	;.endef
 __gmpn_mul_1c:
 
 push	rsi
@@ -17,12 +17,12 @@ mov	rsi, rdx
 	jmp	Lcommon
 	
 
-	.globl	__gmpn_mul_1
+	global __gmpn_mul_1
 	
-	.def	__gmpn_mul_1
-	.scl	2
-	.type	32
-	.endef
+	;.def	__gmpn_mul_1
+	;.scl	2
+	;.type	32
+	;.endef
 __gmpn_mul_1:
 
 push	rsi
@@ -91,13 +91,13 @@ Lb2:
 	mov	rdi, rdx
 	jmp	LL2
 
-	.align	16, 0x90
+	align 16, db 0x90
 Ltop:
 	mov	[rcx + r8 * 8], r10
 	add	rdi, rax
 	mov	rax, [rsi + r8 * 8]
 	adc	r11, rdx
-	mov	%r10d, 0
+	mov	r10d, 0
 LL1:
 	mul	r9
 	mov	[rcx + r8 * 8 + 8], rdi
@@ -113,7 +113,7 @@ LL3:
 	mov	rax, [rsi + r8 * 8 + 16]
 	mul	r9
 	mov	[rcx + r8 * 8 + 24], rbx
-	mov	%r11d, 0
+	mov	r11d, 0
 	mov	rbx, r11
 	add	r10, rax
 	mov	rax, [rsi + r8 * 8 + 24]

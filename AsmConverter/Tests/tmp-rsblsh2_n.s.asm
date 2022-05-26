@@ -1,11 +1,11 @@
-	.text
-	.align	16, 0x90
-	.globl	__gmpn_rsblsh2_n
+	section .text
+	align 16, db 0x90
+	global __gmpn_rsblsh2_n
 	
-	.def	__gmpn_rsblsh2_n
-	.scl	2
-	.type	32
-	.endef
+	;.def	__gmpn_rsblsh2_n
+	;.scl	2
+	;.type	32
+	;.endef
 __gmpn_rsblsh2_n:
 
 	push	rdi
@@ -80,7 +80,7 @@ Lb00:
 	mov	r10, [rdx + rcx * 8 + 16]
 	jmp	Le00
 
-	.align	16, 0x90
+	align 16, db 0x90
 Ltop:
 	mov	r10, [rdx + rcx * 8 + 16]
 	mov	r8, [rdx + rcx * 8]
@@ -110,8 +110,8 @@ Le00:
 Lend:
 
 
-	add	eax, %r11d
-;BAD 	movslq	%eax, %rax
+	add	eax, r11d
+	;BAD 	movslq	%eax, %rax
 
 	pop	r15
 	pop	r14

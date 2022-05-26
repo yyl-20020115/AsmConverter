@@ -1,4 +1,4 @@
-	.text
+		.text
 	.align	32, 0x90
 	.globl	__gmpn_redc_1
 	

@@ -1,11 +1,11 @@
-	.text
-	.align	16, 0x90
-	.globl	__gmpn_bdiv_q_1
+	section .text
+	align 16, db 0x90
+	global __gmpn_bdiv_q_1
 	
-	.def	__gmpn_bdiv_q_1
-	.scl	2
-	.type	32
-	.endef
+	;.def	__gmpn_bdiv_q_1
+	;.scl	2
+	;.type	32
+	;.endef
 __gmpn_bdiv_q_1:
 
 	push	rdi
@@ -33,7 +33,7 @@ Lodd:
 	lea	rdx, [%rip + __gmp_binvert_limb_table]
 
 
-;BAD 	movzbl	(%rdx,%rax), %eax	
+	;BAD 	movzbl	(%rdx,%rax), %eax	
 
 	mov	r11, rbx
 
@@ -60,12 +60,12 @@ Levn:
 	jmp	Lodd
 	
 
-	.globl	__gmpn_pi1_bdiv_q_1
+	global __gmpn_pi1_bdiv_q_1
 	
-	.def	__gmpn_pi1_bdiv_q_1
-	.scl	2
-	.type	32
-	.endef
+	;.def	__gmpn_pi1_bdiv_q_1
+	;.scl	2
+	;.type	32
+	;.endef
 __gmpn_pi1_bdiv_q_1:
 
 	push	rdi
@@ -98,12 +98,12 @@ Lpi1:
 	xor	ebx, ebx
 	jmp	Lnent
 
-	.align	8, 0x90
+	align 8, db 0x90
 Lntop:
 mul	r11
 	mov	rax, [rsi + r10 * 8 - 8]
 	sub	rax, rbx
-;BAD 	setc	%bl		
+	;BAD 	setc	%bl		
 	sub	rax, rdx
 	adc	ebx, 0
 Lnent:
@@ -125,7 +125,7 @@ Lunorm:
 	xor	ebx, ebx
 	jmp	Luent
 
-	.align	8, 0x90
+	align 8, db 0x90
 Lutop:
 mul	r11
 	mov	rax, [rsi + r10 * 8]
@@ -133,7 +133,7 @@ mul	r11
 	neg	ecx
 	or	rax, r9
 	sub	rax, rbx
-;BAD 	setc	%bl		
+	;BAD 	setc	%bl		
 	sub	rax, rdx
 	adc	ebx, 0
 Luent:

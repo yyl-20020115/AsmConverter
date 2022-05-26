@@ -1,11 +1,11 @@
-	.text
-	.align	16, 0x90
-	.globl	__gmpn_mod_1s_4p
+	section .text
+	align 16, db 0x90
+	global __gmpn_mod_1s_4p
 	
-	.def	__gmpn_mod_1s_4p
-	.scl	2
-	.type	32
-	.endef
+	;.def	__gmpn_mod_1s_4p
+	;.scl	2
+	;.type	32
+	;.endef
 __gmpn_mod_1s_4p:
 
 	push	rdi
@@ -29,7 +29,7 @@ __gmpn_mod_1s_4p:
 	mov	rbp, [rcx + 32]
 	mov	r13, [rcx + 40]
 	mov	r12, [rcx + 48]
-	xor	%r8d, %r8d
+	xor	r8d, r8d
 	mov	edx, esi
 	and	edx, 3
 	je	Lb0
@@ -48,7 +48,7 @@ Lb3:
 	mul	rbx
 	jmp	Lm0
 
-	.align	8, 0x90
+	align 8, db 0x90
 Lb0:
 	lea	rdi, [rdi + rsi * 8 - 32]
 	mov	rax, [rdi + 8]
@@ -64,20 +64,20 @@ Lb0:
 	mul	rbp
 	jmp	Lm0
 
-	.align	8, 0x90
+	align 8, db 0x90
 Lb1:
 	lea	rdi, [rdi + rsi * 8 - 8]
 	mov	r9, [rdi]
 	jmp	Lm1
 
-	.align	8, 0x90
+	align 8, db 0x90
 Lb2:
 	lea	rdi, [rdi + rsi * 8 - 16]
 	mov	r8, [rdi + 8]
 	mov	r9, [rdi]
 	jmp	Lm1
 
-	.align	16, 0x90
+	align 16, db 0x90
 Ltop:
 	mov	rax, [rdi - 24]
 	mov	r10, [rdi - 32]
@@ -135,10 +135,10 @@ Lend:
 	sub	r8, rdx
 	lea	rax, [(%r8,%rbx)]
 	cmp	r9, r8
-;BAD 	cmovc	%rax, %r8
+	;BAD 	cmovc	%rax, %r8
 	mov	rax, r8
 	sub	rax, rbx
-;BAD 	cmovc	%r8, %rax
+	;BAD 	cmovc	%r8, %rax
 	shr	rax, cl
 	pop	rbx
 	pop	rbp
@@ -151,13 +151,13 @@ Lend:
 	ret
 	
 
-	.align	16, 0x90
-	.globl	__gmpn_mod_1s_4p_cps
+	align 16, db 0x90
+	global __gmpn_mod_1s_4p_cps
 	
-	.def	__gmpn_mod_1s_4p_cps
-	.scl	2
-	.type	32
-	.endef
+	;.def	__gmpn_mod_1s_4p_cps
+	;.scl	2
+	;.type	32
+	;.endef
 __gmpn_mod_1s_4p_cps:
 
 	push	rdi
@@ -201,7 +201,7 @@ __gmpn_mod_1s_4p_cps:
 	imul	rdx, r12
 	lea	rsi, [(%rdx,%r12)]
 	cmp	rax, rdx
-;BAD 	cmovnc	%rdx, %rsi
+	;BAD 	cmovnc	%rdx, %rsi
 	mov	rax, r11
 	mul	rsi
 
@@ -213,7 +213,7 @@ __gmpn_mod_1s_4p_cps:
 	imul	rdx, r12
 	lea	rsi, [(%rdx,%r12)]
 	cmp	rax, rdx
-;BAD 	cmovnc	%rdx, %rsi
+	;BAD 	cmovnc	%rdx, %rsi
 	mov	rax, r11
 	mul	rsi
 
@@ -225,7 +225,7 @@ __gmpn_mod_1s_4p_cps:
 	imul	rdx, r12
 	lea	rsi, [(%rdx,%r12)]
 	cmp	rax, rdx
-;BAD 	cmovnc	%rdx, %rsi
+	;BAD 	cmovnc	%rdx, %rsi
 	mov	rax, r11
 	mul	rsi
 
@@ -237,7 +237,7 @@ __gmpn_mod_1s_4p_cps:
 	imul	rdx, r12
 	add	r12, rdx
 	cmp	rax, rdx
-;BAD 	cmovnc	%rdx, %r12
+	;BAD 	cmovnc	%rdx, %r12
 
 	shr	r12, cl
 	mov	[rbx + 48], r12

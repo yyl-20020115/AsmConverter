@@ -1,11 +1,11 @@
-	.text
-	.align	16, 0x90
-	.globl	__gmpn_invert_limb
+	section .text
+	align 16, db 0x90
+	global __gmpn_invert_limb
 	
-	.def	__gmpn_invert_limb
-	.scl	2
-	.type	32
-	.endef
+	;.def	__gmpn_invert_limb
+	;.scl	2
+	;.type	32
+	;.endef
 __gmpn_invert_limb:
 		
 	push	rdi
@@ -17,7 +17,7 @@ __gmpn_invert_limb:
 
 	lea	r8, [%rip - 512+__gmpn_invert_limb_table]
 
-;BAD 	movzwl	(%r8,%rax,2), %ecx	
+	;BAD 	movzwl	(%r8,%rax,2), %ecx	
 
 	
 	mov	rsi, rdi

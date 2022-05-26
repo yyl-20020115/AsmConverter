@@ -1,11 +1,11 @@
-	.text
-	.align	16, 0x90
-	.globl	__gmpn_divrem_2
+	section .text
+	align 16, db 0x90
+	global __gmpn_divrem_2
 	
-	.def	__gmpn_divrem_2
-	.scl	2
-	.type	32
-	.endef
+	;.def	__gmpn_divrem_2
+	;.scl	2
+	;.type	32
+	;.endef
 __gmpn_divrem_2:
 
 	push	rdi
@@ -30,15 +30,15 @@ __gmpn_divrem_2:
 	mov	r8, [r8]
 	mov	r10, [r12 + 8]
 
-	xor	%r15d, %r15d
+	xor	r15d, r15d
 	cmp	r11, rbx
 	ja	L2
 	set	dl
 	cmp	r8, r10
-;BAD 	setbe	%al
+	;BAD 	setbe	%al
 	or	dl, al
 	je	L2
-	inc	%r15d
+	inc	r15d
 	sub	r10, r8
 	sbb	rbx, r11
 L2:
@@ -84,7 +84,7 @@ L2:
 
 
 
-	.align	16, 0x90
+	align 16, db 0x90
 Ltop:
 	mov	rax, rdi
 	mul	rbx
@@ -95,7 +95,7 @@ Ltop:
 	imul	rdx, rsi
 	mov	rax, r8
 	lea	rbx, [(%rdx, %r10)]
-	xor	%r10d, %r10d
+	xor	r10d, r10d
 	mul	r9
 	cmp	r13, r14
 	jg	L19
@@ -109,8 +109,8 @@ L19:
 	xor	eax, eax
 	xor	edx, edx
 	cmp	rbx, rcx
-;BAD 	cmovnc	%r8, %rax		
-;BAD 	cmovnc	%r11, %rdx		
+	;BAD 	cmovnc	%r8, %rax		
+	;BAD 	cmovnc	%r11, %rdx		
 	adc	r9, 0
 	nop
 	add	r10, rax
@@ -138,9 +138,9 @@ Lend:
 	ret
 
 Lfix:
-;BAD 	seta	%dl
+	;BAD 	seta	%dl
 	cmp	r10, r8
-;BAD 	setae	%al
+	;BAD 	setae	%al
 	or	al, dl
 	je	Lbck
 	inc	r9

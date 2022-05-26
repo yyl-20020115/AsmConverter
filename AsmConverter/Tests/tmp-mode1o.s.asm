@@ -1,11 +1,11 @@
-	.text
-	.align	32, 0x90
-	.globl	__gmpn_modexact_1_odd
+	section .text
+	align 32, db 0x90
+	global __gmpn_modexact_1_odd
 	
-	.def	__gmpn_modexact_1_odd
-	.scl	2
-	.type	32
-	.endef
+	;.def	__gmpn_modexact_1_odd
+	;.scl	2
+	;.type	32
+	;.endef
 __gmpn_modexact_1_odd:
 
 	push	rdi
@@ -17,12 +17,12 @@ __gmpn_modexact_1_odd:
 	mov	ecx, 0
 	jmp	Lent
 
-	.globl	__gmpn_modexact_1c_odd
+	global __gmpn_modexact_1c_odd
 	
-	.def	__gmpn_modexact_1c_odd
-	.scl	2
-	.type	32
-	.endef
+	;.def	__gmpn_modexact_1c_odd
+	;.scl	2
+	;.type	32
+	;.endef
 __gmpn_modexact_1c_odd:
 
 	push	rdi
@@ -48,7 +48,7 @@ Lent:
 	and	edx, 127
 	mov	r10, rcx
 
-;BAD 	movzbl	(%r9,%rdx), %edx	
+	;BAD 	movzbl	(%r9,%rdx), %edx	
 
 	mov	rax, [rdi]
 	lea	r11, [rdi + rsi * 8]
@@ -85,7 +85,7 @@ Lent:
 	jz	Lone
 
 
-	.align	16, 0x90
+	align 16, db 0x90
 Ltop:
 	
 	
@@ -105,7 +105,7 @@ Ltop:
 
 	mov	rax, [r11 + rsi * 8]
 	sub	rax, rcx
-;BAD 	setc	%cl		
+	;BAD 	setc	%cl		
 
 	inc	rsi
 	jnz	Ltop

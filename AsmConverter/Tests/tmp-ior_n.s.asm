@@ -1,11 +1,11 @@
-	.text
-	.align	32, 0x90
-	.globl	__gmpn_ior_n
+	section .text
+	align 32, db 0x90
+	global __gmpn_ior_n
 	
-	.def	__gmpn_ior_n
-	.scl	2
-	.type	32
-	.endef
+	;.def	__gmpn_ior_n
+	;.scl	2
+	;.type	32
+	;.endef
 __gmpn_ior_n:
 
 	push	rdi
@@ -46,7 +46,7 @@ Lb01:
 	lea	rdx, [rdx + 8]
 	lea	rdi, [rdi + 8]
 
-	.align	16, 0x90
+	align 16, db 0x90
 Ltop:
 	mov	r8, [rdx]
 Lb00:

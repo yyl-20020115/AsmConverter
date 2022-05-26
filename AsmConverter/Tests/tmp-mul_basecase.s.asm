@@ -1,11 +1,11 @@
-	.text
-	.align	32, 0x90
-	.globl	__gmpn_mul_basecase
+	section .text
+	align 32, db 0x90
+	global __gmpn_mul_basecase
 	
-	.def	__gmpn_mul_basecase
-	.scl	2
-	.type	32
-	.endef
+	;.def	__gmpn_mul_basecase
+	;.scl	2
+	;.type	32
+	;.endef
 __gmpn_mul_basecase:
 
 	push	rdi
@@ -15,7 +15,7 @@ __gmpn_mul_basecase:
 	mov	rdx, r8
 	mov	rcx, r9
 
-	mov	%r8d, [rsp + 56]
+	mov	r8d, [rsp + 56]
 	mov	rax, [rsi]
 	push	rbx
 	push	rbp
@@ -33,16 +33,16 @@ __gmpn_mul_basecase:
 
 	mul	r10
 
-	test	%r8b, 1
+	test	r8b, 1
 	jz	Lm2
 
 	lea	r14, [rcx + 8]
 
-	test	%r9b, 1
+	test	r9b, 1
 	jnz	Lm1x1
 
 Lm1x0:
-test	%r9b, 2
+test	r9b, 2
 	jnz	Lm1s2
 
 Lm1s0:
@@ -69,7 +69,7 @@ Lm1s2:
 	jmp	Lret2
 
 Lm1x1:
-test	%r9b, 2
+test	r9b, 2
 	jz	Lm1s3
 
 Lm1s1:
@@ -93,7 +93,7 @@ Lm1s3:
 	lea	rbp, [%rip + Ldo_am3]
 	jmp	Lm1e3
 
-	.align	16, 0x90
+	align 16, db 0x90
 Lm1top:
 	mul	r10
 	mov	[rdi + r13 * 8 - 16], rcx
@@ -142,11 +142,11 @@ Lm2:
 	mov	r11, [rcx + 8]
 	lea	r14, [rcx + 16]
 
-	test	%r9b, 1
+	test	r9b, 1
 	jnz	Lbx1
 
 Lbx0:
-	test	%r9b, 2
+	test	r9b, 2
 	jnz	Lb10
 
 Lb00:
@@ -166,7 +166,7 @@ Lb10:
 	jmp	Lm2e2
 
 Lbx1:
-	test	%r9b, 2
+	test	r9b, 2
 	jz	Lb11
 
 Lb01:
@@ -182,10 +182,10 @@ Lb11:
 	mov	rcx, rax
 	mov	rax, [rsi + r9 * 8]
 	mov	rbp, rdx
-	mov	%r12d, 0
+	mov	r12d, 0
 	jmp	Lm2e3
 
-	.align	16, 0x90
+	align 16, db 0x90
 Lm2top0:
 	mul	r10
 	add	r12, rax
@@ -210,10 +210,10 @@ mul	r11
 	adc	rbp, rdx
 	mov	rax, [rsi + r13 * 8 + 8]
 	mul	r10
-	mov	%r12d, 0
+	mov	r12d, 0
 	add	rcx, rax
 	adc	rbp, rdx
-	adc	%r12d, 0
+	adc	r12d, 0
 	mov	rax, [rsi + r13 * 8 + 8]
 	mul	r11
 	add	rbp, rax
@@ -272,7 +272,7 @@ Lolo0:
 	mov	r12, rax
 	jmp	Llo0
 
-	.align	16, 0x90
+	align 16, db 0x90
 Lam2top0:
 	mul	r11
 	add	rcx, rbx
@@ -363,7 +363,7 @@ pop	r14
 	ret
 
 
-	.align	16, 0x90
+	align 16, db 0x90
 Lm2top1:
 	mul	r10
 	add	r12, rax
@@ -388,10 +388,10 @@ mul	r11
 	adc	rbp, rdx
 	mov	rax, [rsi + r13 * 8 + 8]
 	mul	r10
-	mov	%r12d, 0
+	mov	r12d, 0
 	add	rcx, rax
 	adc	rbp, rdx
-	adc	%r12d, 0
+	adc	r12d, 0
 	mov	rax, [rsi + r13 * 8 + 8]
 	mul	r11
 	add	rbp, rax
@@ -450,7 +450,7 @@ Lolo1:
 	lea	r12, [rdx]
 	jmp	Llo1
 
-	.align	16, 0x90
+	align 16, db 0x90
 Lam2top1:
 	mul	r11
 	add	rcx, rbx
@@ -539,7 +539,7 @@ Llo1:
 	ret
 
 
-	.align	16, 0x90
+	align 16, db 0x90
 Lm2top2:
 	mul	r10
 	add	r12, rax
@@ -563,10 +563,10 @@ Lm2top2:
 	adc	rbp, rdx
 	mov	rax, [rsi + r13 * 8 + 8]
 	mul	r10
-	mov	%r12d, 0
+	mov	r12d, 0
 	add	rcx, rax
 	adc	rbp, rdx
-	adc	%r12d, 0
+	adc	r12d, 0
 	mov	rax, [rsi + r13 * 8 + 8]
 	mul	r11
 	add	rbp, rax
@@ -626,7 +626,7 @@ Lolo2:
 	mov	rax, [rsi + r9 * 8 + 8]
 	jmp	Llo2
 
-	.align	16, 0x90
+	align 16, db 0x90
 Lam2top2:
 	mul	r11
 	add	rcx, rbx
@@ -715,7 +715,7 @@ Llo2:
 	ret
 
 
-	.align	16, 0x90
+	align 16, db 0x90
 Lm2top3:
 	mul	r10
 	add	r12, rax
@@ -739,10 +739,10 @@ Lm2top3:
 	adc	rbp, rdx
 	mov	rax, [rsi + r13 * 8 + 8]
 	mul	r10
-	mov	%r12d, 0
+	mov	r12d, 0
 	add	rcx, rax
 	adc	rbp, rdx
-	adc	%r12d, 0
+	adc	r12d, 0
 	mov	rax, [rsi + r13 * 8 + 8]
 Lm2e3:
 mul	r11
@@ -802,7 +802,7 @@ Lolo3:
 	mov	rax, [rsi + r9 * 8 + 8]
 	jmp	Llo3
 
-	.align	16, 0x90
+	align 16, db 0x90
 Lam2top3:
 	mul	r11
 	add	rcx, rbx

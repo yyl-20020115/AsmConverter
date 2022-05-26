@@ -1,11 +1,11 @@
-	.text
-	.align	16, 0x90
-	.globl	__gmpn_div_qr_2n_pi1
+	section .text
+	align 16, db 0x90
+	global __gmpn_div_qr_2n_pi1
 	
-	.def	__gmpn_div_qr_2n_pi1
-	.scl	2
-	.type	32
-	.endef
+	;.def	__gmpn_div_qr_2n_pi1
+	;.scl	2
+	;.type	32
+	;.endef
 __gmpn_div_qr_2n_pi1:
 
 	push	rdi
@@ -33,8 +33,8 @@ __gmpn_div_qr_2n_pi1:
 	mov	r13, rbx
 	sub	r14, r9
 	sbb	r13, r8
-;BAD 	cmovnc  %r14, %r12
-;BAD 	cmovnc	%r13, %rbx
+	;BAD 	cmovnc  %r14, %r12
+	;BAD 	cmovnc	%r13, %rbx
 	
 	sbb	rax, rax
 	inc	rax
@@ -45,7 +45,7 @@ __gmpn_div_qr_2n_pi1:
 
 	jmp	Lnext
 
-	.align	16, 0x90
+	align 16, db 0x90
 Lloop:
 	
 	
@@ -68,8 +68,8 @@ Lloop:
 	xor	eax, eax
 	xor	edx, edx
 	cmp	rbx, r14
-;BAD 	cmovnc	%r9, %rax
-;BAD 	cmovnc	%r8, %rdx
+	;BAD 	cmovnc	%r9, %rax
+	;BAD 	cmovnc	%r8, %rdx
 	adc	r13, 0
 	nop
 	add	r12, rax
@@ -98,9 +98,9 @@ Lend:
 	ret
 
 Lfix:	
-;BAD 	seta	%dl
+	;BAD 	seta	%dl
 	cmp	r12, r9
-;BAD 	setae	%al
+	;BAD 	setae	%al
 	or	al, dl
 	je	Lbck
 	inc	r13

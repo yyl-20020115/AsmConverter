@@ -1,11 +1,11 @@
-	.text
-	.align	16, 0x90
-	.globl	__gmpn_mod_1_1p
+	section .text
+	align 16, db 0x90
+	global __gmpn_mod_1_1p
 	
-	.def	__gmpn_mod_1_1p
-	.scl	2
-	.type	32
-	.endef
+	;.def	__gmpn_mod_1_1p
+	;.scl	2
+	;.type	32
+	;.endef
 __gmpn_mod_1_1p:
 
 	push	rdi
@@ -41,14 +41,14 @@ Lfirst:
 	mov	r10, r11
 	sub	r10, rbx
 
-	.align	16, 0x90
+	align 16, db 0x90
 Ltop:
 	and	rcx, r11
 	lea	r9, [(%r10, %rbp)]
 	mul	r11
 	add	rcx, rbp
 	mov	rbp, [rdi + rsi * 8]
-;BAD 	cmovc	%r9, %rcx
+	;BAD 	cmovc	%r9, %rcx
 	add	rbp, rax
 	mov	rax, rcx
 	adc	rax, rdx
@@ -83,7 +83,7 @@ Lreduce_two:
 Lnormalized:
 	mov	r9, rax
 	sub	r9, rbx
-;BAD 	cmovnc	%r9, %rax
+	;BAD 	cmovnc	%r9, %rax
 
 Ludiv:
 	lea	r9, [rax + 1]
@@ -94,7 +94,7 @@ Ludiv:
 	sub	rbp, rdx
 	cmp	rax, rbp
 	lea	rax, [(%rbx, %rbp)]
-;BAD 	cmovnc	%rbp, %rax
+	;BAD 	cmovnc	%rbp, %rax
 	cmp	rax, rbx
 	jnc	Lfix
 Lok:
@@ -110,13 +110,13 @@ Lfix:
 	jmp	Lok
 	
 
-	.align	16, 0x90
-	.globl	__gmpn_mod_1_1p_cps
+	align 16, db 0x90
+	global __gmpn_mod_1_1p_cps
 	
-	.def	__gmpn_mod_1_1p_cps
-	.scl	2
-	.type	32
-	.endef
+	;.def	__gmpn_mod_1_1p_cps
+	;.scl	2
+	;.type	32
+	;.endef
 __gmpn_mod_1_1p_cps:
 
 	push	rdi

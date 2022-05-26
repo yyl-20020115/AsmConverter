@@ -1,11 +1,11 @@
-	.text
-	.align	8, 0x90
-	.globl	__gmpn_sublsh1_n
+	section .text
+	align 8, db 0x90
+	global __gmpn_sublsh1_n
 	
-	.def	__gmpn_sublsh1_n
-	.scl	2
-	.type	32
-	.endef
+	;.def	__gmpn_sublsh1_n
+	;.scl	2
+	;.type	32
+	;.endef
 __gmpn_sublsh1_n:
 
 	push	rdi
@@ -24,7 +24,7 @@ __gmpn_sublsh1_n:
 	lea	rdi, [rdi + rcx * 8 + 24]
 	neg	rcx
 
-	xor	%r11d, %r11d
+	xor	r11d, r11d
 
 	mov	r8, [rdx + rcx * 8 - 24]
 	shrd	r11, r8, 63
@@ -80,7 +80,7 @@ Lb2:
 	js	Ltop
 	jmp	Lend
 
-	.align	16, 0x90
+	align 16, db 0x90
 Ltop:
 	mov	r8, [rdx + rcx * 8 - 24]
 	shrd	r11, r8, 63
@@ -120,7 +120,7 @@ Lend:
 	shr	r11, 63
 	pop	r12
 	pop	rbx
-	sub	eax, %r11d
+	sub	eax, r11d
 	neg	eax
 	pop	rsi
 	pop	rdi

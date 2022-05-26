@@ -1,11 +1,11 @@
-	.text
-	.align	16, 0x90
-	.globl	__gmpn_cnd_sub_n
+	section .text
+	align 16, db 0x90
+	global __gmpn_cnd_sub_n
 	
-	.def	__gmpn_cnd_sub_n
-	.scl	2
-	.type	32
-	.endef
+	;.def	__gmpn_cnd_sub_n
+	;.scl	2
+	;.type	32
+	;.endef
 __gmpn_cnd_sub_n:
 
 	push	rdi
@@ -15,7 +15,7 @@ __gmpn_cnd_sub_n:
 	mov	rdx, r8
 	mov	rcx, r9
 
-	mov	%r8d, [rsp + 56]
+	mov	r8d, [rsp + 56]
 	push	rbx
 	push	rbp
 	push	r12
@@ -29,7 +29,7 @@ __gmpn_cnd_sub_n:
 	lea	rdx, [rdx + r8 * 8]
 	lea	rsi, [rsi + r8 * 8]
 
-	mov	eax, %r8d
+	mov	eax, r8d
 	neg	r8
 	and	eax, 3
 	jz	Ltop
@@ -84,7 +84,7 @@ Lb1:
 	add	r8, 1
 	jns	Lend
 
-	.align	16, 0x90
+	align 16, db 0x90
 Ltop:
 	mov	r12, [rcx + r8 * 8]
 	mov	r13, [rcx + r8 * 8 + 8]

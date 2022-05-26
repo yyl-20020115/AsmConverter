@@ -1,11 +1,11 @@
-	.text
-	.align	16, 0x90
-	.globl	__gmpn_mod_1s_2p
+	section .text
+	align 16, db 0x90
+	global __gmpn_mod_1s_2p
 	
-	.def	__gmpn_mod_1s_2p
-	.scl	2
-	.type	32
-	.endef
+	;.def	__gmpn_mod_1s_2p
+	;.scl	2
+	;.type	32
+	;.endef
 __gmpn_mod_1s_2p:
 
 	push	rdi
@@ -53,7 +53,7 @@ L11:
 	mov	rax, [rdi - 32]
 	jmp	Lm0
 
-	.align	16, 0x90
+	align 16, db 0x90
 Ltop:
 	mov	r9, [rdi - 24]
 	add	r11, rax
@@ -122,10 +122,10 @@ L1:
 	sub	r8, rdx
 	lea	rax, [(%r8,%r14)]
 	cmp	rsi, r8
-;BAD 	cmovc	%rax, %r8
+	;BAD 	cmovc	%rax, %r8
 	mov	rax, r8
 	sub	rax, r14
-;BAD 	cmovc	%r8, %rax
+	;BAD 	cmovc	%r8, %rax
 	mov	ecx, edi
 	shr	rax, cl
 	pop	rbx
@@ -143,13 +143,13 @@ Lone:
 	jmp	L1
 	
 
-	.align	16, 0x90
-	.globl	__gmpn_mod_1s_2p_cps
+	align 16, db 0x90
+	global __gmpn_mod_1s_2p_cps
 	
-	.def	__gmpn_mod_1s_2p_cps
-	.scl	2
-	.type	32
-	.endef
+	;.def	__gmpn_mod_1s_2p_cps
+	;.scl	2
+	;.type	32
+	;.endef
 __gmpn_mod_1s_2p_cps:
 
 	push	rdi
@@ -193,7 +193,7 @@ __gmpn_mod_1s_2p_cps:
 	imul	rdx, r12
 	lea	rsi, [(%rdx,%r12)]
 	cmp	rax, rdx
-;BAD 	cmovnc	%rdx, %rsi
+	;BAD 	cmovnc	%rdx, %rsi
 	mov	rax, r11
 	mul	rsi
 
@@ -205,7 +205,7 @@ __gmpn_mod_1s_2p_cps:
 	imul	rdx, r12
 	add	r12, rdx
 	cmp	rax, rdx
-;BAD 	cmovnc	%rdx, %r12
+	;BAD 	cmovnc	%rdx, %r12
 
 	shr	r12, cl
 	mov	[rbx + 32], r12

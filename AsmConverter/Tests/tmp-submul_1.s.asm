@@ -1,11 +1,11 @@
-	.text
-	.align	32, 0x90
-	.globl	__gmpn_submul_1
+	section .text
+	align 32, db 0x90
+	global __gmpn_submul_1
 	
-	.def	__gmpn_submul_1
-	.scl	2
-	.type	32
-	.endef
+	;.def	__gmpn_submul_1
+	;.scl	2
+	;.type	32
+	;.endef
 __gmpn_submul_1:
 
 	push	rdi
@@ -33,7 +33,7 @@ Lb00:
 	mov	ebx, 3
 	sub	rbx, rdx
 	mul	rcx
-	mov	%r11d, 0
+	mov	r11d, 0
 	mov	r10, r8
 	sub	r10, rax
 	mov	rax, [rsi + rbx * 8 - 8]
@@ -45,7 +45,7 @@ Lb10:
 	sub	rbx, rdx
 	mul	rcx
 	mov	r10, r8
-	mov	%r11d, 0
+	mov	r11d, 0
 	sub	r10, rax
 	mov	rax, [rsi + rbx * 8 + 8]
 	adc	r11, rdx
@@ -60,7 +60,7 @@ Lb11:
 	sub	rbx, rdx
 	mul	rcx
 	sub	r8, rax
-	mov	%r9d, 0
+	mov	r9d, 0
 	mov	rax, [rsi + rbx * 8]
 	adc	r9, rdx
 	jmp	Llo3
@@ -72,17 +72,17 @@ Lb01:
 	add	rbx, 4
 	jc	Lend
 
-	.align	32, 0x90
+	align 32, db 0x90
 Ltop:
 	mul	rcx
 	sub	r8, rax
-	mov	%r9d, 0
+	mov	r9d, 0
 	mov	rax, [rsi + rbx * 8 - 16]
 	adc	r9, rdx
 Llo1:
 	mul	rcx
 	sub	r8, r11
-	mov	%r11d, 0
+	mov	r11d, 0
 	mov	r10, [rdi + rbx * 8 - 16]
 	adc	r9, 0
 	sub	r10, rax
@@ -95,7 +95,7 @@ Llo0:
 	mov	r8, [rdi + rbx * 8 - 8]
 	mul	rcx
 	sub	r8, rax
-	mov	%r9d, 0
+	mov	r9d, 0
 	mov	rax, [rsi + rbx * 8]
 	adc	r9, rdx
 	mov	[rdi + rbx * 8 - 16], r10
@@ -104,7 +104,7 @@ Llo0:
 Llo3:
 	mul	rcx
 	mov	r10, [rdi + rbx * 8]
-	mov	%r11d, 0
+	mov	r11d, 0
 	sub	r10, rax
 	mov	rax, [rsi + rbx * 8 + 8]
 	adc	r11, rdx

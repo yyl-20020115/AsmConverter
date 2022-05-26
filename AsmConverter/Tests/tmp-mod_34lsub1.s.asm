@@ -1,11 +1,11 @@
-	.text
-	.align	32, 0x90
-	.globl	__gmpn_mod_34lsub1
+	section .text
+	align 32, db 0x90
+	global __gmpn_mod_34lsub1
 	
-	.def	__gmpn_mod_34lsub1
-	.scl	2
-	.type	32
-	.endef
+	;.def	__gmpn_mod_34lsub1
+	;.scl	2
+	;.type	32
+	;.endef
 __gmpn_mod_34lsub1:
 
 	push	rdi
@@ -52,7 +52,7 @@ Lgt2:
 	add	rdi, 24
 	sub	rsi, 12
 	jc	Lend
-	.align	16, 0x90
+	align 16, db 0x90
 Ltop:
 	add	rax, [rdi]
 	adc	rcx, [rdi + 8]
@@ -72,23 +72,23 @@ Ltop:
 
 Lend:
 	lea	r8, [%rip + Ltab]
-;BAD 	movslq	36(%r8,%rsi,4), %r10
+	;BAD 	movslq	36(%r8,%rsi,4), %r10
 	add	r8, r10
 	jmp	*%r8
 
-		.section .rdata,"dr"
-	.align	8, 0x90
+				.section .rdata,"dr"
+	align 8, db 0x90
 Ltab:
-	.long	L0-Ltab
-	.long	L1-Ltab
-	.long	L2-Ltab
-	.long	L3-Ltab
-	.long	L4-Ltab
-	.long	L5-Ltab
-	.long	L6-Ltab
-	.long	L7-Ltab
-	.long	L8-Ltab
-	.text
+		.long	L0-Ltab
+		.long	L1-Ltab
+		.long	L2-Ltab
+		.long	L3-Ltab
+		.long	L4-Ltab
+		.long	L5-Ltab
+		.long	L6-Ltab
+		.long	L7-Ltab
+		.long	L8-Ltab
+	section .text
 
 L6:
 	add	rax, [rdi]
@@ -149,12 +149,12 @@ L0:
 	shr	rax, 48
 
 	and	rdi, r11
-	mov	%r10d, ecx
+	mov	r10d, ecx
 
 	shr	rcx, 32
 
 	add	rax, rdi
-;BAD 	movzwl	%dx, %edi		
+	;BAD 	movzwl	%dx, %edi		
 	shl	r10, 16
 
 	add	rax, rcx

@@ -1,11 +1,11 @@
-	.text
-	.align	16, 0x90
-	.globl	__gmpn_mul_2
+	section .text
+	align 16, db 0x90
+	global __gmpn_mul_2
 	
-	.def	__gmpn_mul_2
-	.scl	2
-	.type	32
-	.endef
+	;.def	__gmpn_mul_2
+	;.scl	2
+	;.type	32
+	;.endef
 __gmpn_mul_2:
 
 	push	rdi
@@ -35,7 +35,7 @@ __gmpn_mul_2:
 	jz	Lm2p2
 Lm2p3:
 	mul	r8
-	xor	%r10d, %r10d
+	xor	r10d, r10d
 	mov	rcx, rax
 	mov	rbp, rdx
 	mov	rax, [rsi + r11 * 8 + 8]
@@ -51,7 +51,7 @@ Lm2p0:
 	jmp	Lm20
 Lm2p1:
 	mul	r8
-	xor	%r10d, %r10d
+	xor	r10d, r10d
 	xor	ebx, ebx
 	xor	ecx, ecx
 	add	r11, 1
@@ -67,7 +67,7 @@ Lm2p2:
 	jmp	Lm22
 
 
-	.align	32, 0x90
+	align 32, db 0x90
 Lm2top:
 	add	r10, rax
 	adc	rbx, rdx
@@ -89,12 +89,12 @@ Lm20:
 	add	rcx, rax
 	adc	rbp, rdx
 	mov	rax, [rsi + r11 * 8 + 16]
-	mov	%r10d, 0
+	mov	r10d, 0
 	mul	r8
 	add	rcx, rax
 	mov	rax, [rsi + r11 * 8 + 16]
 	adc	rbp, rdx
-	adc	%r10d, 0
+	adc	r10d, 0
 	mul	r9
 	add	rbp, rax
 	mov	[rdi + r11 * 8 + 8], rbx

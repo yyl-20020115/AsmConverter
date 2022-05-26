@@ -1,11 +1,11 @@
-	.text
-	.align	16, 0x90
-	.globl	__gmpn_bdiv_dbm1c
+	section .text
+	align 16, db 0x90
+	global __gmpn_bdiv_dbm1c
 	
-	.def	__gmpn_bdiv_dbm1c
-	.scl	2
-	.type	32
-	.endef
+	;.def	__gmpn_bdiv_dbm1c
+	;.scl	2
+	;.type	32
+	;.endef
 __gmpn_bdiv_dbm1c:
 
 	push	rdi
@@ -18,20 +18,20 @@ __gmpn_bdiv_dbm1c:
 	mov	r8, [rsp + 56]
 	mov	rax, [rsi]
 	mov	r9, rdx
-	mov	%r11d, edx
+	mov	r11d, edx
 	mul	rcx
 	lea	rsi, [rsi + r9 * 8]
 	lea	rdi, [rdi + r9 * 8]
 	neg	r9
-	and	%r11d, 3
+	and	r11d, 3
 	jz	Llo0
 	lea	r9, [(%r9,%r11) - 4]
-	cmp	%r11d, 2
+	cmp	r11d, 2
 	jc	Llo1
 	jz	Llo2
 	jmp	Llo3
 
-	.align	16, 0x90
+	align 16, db 0x90
 Ltop:
 	mov	rax, [rsi + r9 * 8]
 	mul	rcx

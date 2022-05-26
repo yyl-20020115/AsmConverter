@@ -1,11 +1,11 @@
-	.text
-	.align	64, 0x90
-	.globl	__gmpn_com
+	section .text
+	align 64, db 0x90
+	global __gmpn_com
 	
-	.def	__gmpn_com
-	.scl	2
-	.type	32
-	.endef
+	;.def	__gmpn_com
+	;.scl	2
+	;.type	32
+	;.endef
 __gmpn_com:
 
 	push	rdi
@@ -36,7 +36,7 @@ Lrp_aligned:
 
 	jmp	Lam
 
-	.align	16, 0x90
+	align 16, db 0x90
 Latop:
 movaps	xmm0, [rsi + 0]
 	movaps	xmm1, [rsi + 16]
@@ -106,7 +106,7 @@ Luent:
 	sub	rdx, 16
 	jmp	Lum
 
-	.align	16, 0x90
+	align 16, db 0x90
 Lutop:
 movaps	xmm3, [rsi + 120]
 	pxor	xmm0, xmm5
@@ -114,35 +114,35 @@ movaps	xmm3, [rsi + 120]
 	sub	rdx, 16
 Lum:
 	movaps	xmm2, [rsi + 104]
-	.byte	0x66,0x0f,0x3a,0x0f,218,8
+		.byte	0x66,0x0f,0x3a,0x0f,218,8
 	movaps	xmm1, [rsi + 88]
 	pxor	xmm3, xmm5
 	movaps	[rdi + 112], xmm3
-	.byte	0x66,0x0f,0x3a,0x0f,209,8
+		.byte	0x66,0x0f,0x3a,0x0f,209,8
 	movaps	xmm0, [rsi + 72]
 	pxor	xmm2, xmm5
 	movaps	[rdi + 96], xmm2
-	.byte	0x66,0x0f,0x3a,0x0f,200,8
+		.byte	0x66,0x0f,0x3a,0x0f,200,8
 	movaps	xmm3, [rsi + 56]
 	pxor	xmm1, xmm5
 	movaps	[rdi + 80], xmm1
-	.byte	0x66,0x0f,0x3a,0x0f,195,8
+		.byte	0x66,0x0f,0x3a,0x0f,195,8
 	movaps	xmm2, [rsi + 40]
 	pxor	xmm0, xmm5
 	movaps	[rdi + 64], xmm0
-	.byte	0x66,0x0f,0x3a,0x0f,218,8
+		.byte	0x66,0x0f,0x3a,0x0f,218,8
 	movaps	xmm1, [rsi + 24]
 	pxor	xmm3, xmm5
 	movaps	[rdi + 48], xmm3
-	.byte	0x66,0x0f,0x3a,0x0f,209,8
+		.byte	0x66,0x0f,0x3a,0x0f,209,8
 	movaps	xmm0, [rsi + 8]
 	pxor	xmm2, xmm5
 	movaps	[rdi + 32], xmm2
-	.byte	0x66,0x0f,0x3a,0x0f,200,8
+		.byte	0x66,0x0f,0x3a,0x0f,200,8
 	movaps	xmm3, [rsi - 8]
 	pxor	xmm1, xmm5
 	movaps	[rdi + 16], xmm1
-	.byte	0x66,0x0f,0x3a,0x0f,195,8
+		.byte	0x66,0x0f,0x3a,0x0f,195,8
 	lea	rsi, [rsi + 128]
 	lea	rdi, [rdi + 128]
 	jnc	Lutop
@@ -155,19 +155,19 @@ test	dl, 8
 	jz	1f
 	movaps	xmm3, [rsi + 56]
 	movaps	xmm2, [rsi + 40]
-	.byte	0x66,0x0f,0x3a,0x0f,218,8
+		.byte	0x66,0x0f,0x3a,0x0f,218,8
 	movaps	xmm1, [rsi + 24]
 	pxor	xmm3, xmm5
 	movaps	[rdi + 48], xmm3
-	.byte	0x66,0x0f,0x3a,0x0f,209,8
+		.byte	0x66,0x0f,0x3a,0x0f,209,8
 	movaps	xmm0, [rsi + 8]
 	pxor	xmm2, xmm5
 	movaps	[rdi + 32], xmm2
-	.byte	0x66,0x0f,0x3a,0x0f,200,8
+		.byte	0x66,0x0f,0x3a,0x0f,200,8
 	movaps	xmm3, [rsi - 8]
 	pxor	xmm1, xmm5
 	movaps	[rdi + 16], xmm1
-	.byte	0x66,0x0f,0x3a,0x0f,195,8
+		.byte	0x66,0x0f,0x3a,0x0f,195,8
 	lea	rsi, [rsi + 64]
 	pxor	xmm0, xmm5
 	movaps	[rdi], xmm0
@@ -178,11 +178,11 @@ test	dl, 8
 	jz	1f
 	movaps	xmm1, [rsi + 24]
 	movaps	xmm0, [rsi + 8]
-	.byte	0x66,0x0f,0x3a,0x0f,200,8
+		.byte	0x66,0x0f,0x3a,0x0f,200,8
 	movaps	xmm3, [rsi - 8]
 	pxor	xmm1, xmm5
 	movaps	[rdi + 16], xmm1
-	.byte	0x66,0x0f,0x3a,0x0f,195,8
+		.byte	0x66,0x0f,0x3a,0x0f,195,8
 	lea	rsi, [rsi + 32]
 	pxor	xmm0, xmm5
 	movaps	[rdi], xmm0
@@ -193,7 +193,7 @@ test	dl, 8
 	jz	1f
 	movaps	xmm0, [rsi + 8]
 	movaps	xmm3, [rsi - 8]
-	.byte	0x66,0x0f,0x3a,0x0f,195,8
+		.byte	0x66,0x0f,0x3a,0x0f,195,8
 	lea	rsi, [rsi + 16]
 	pxor	xmm0, xmm5
 	movaps	[rdi], xmm0
@@ -219,7 +219,7 @@ Lbc:
 	sub	edx, 4
 	jc	Lend
 
-	.align	16, 0x90
+	align 16, db 0x90
 Ltop:
 	mov	r8, [rsi]
 	mov	r9, [rsi + 8]

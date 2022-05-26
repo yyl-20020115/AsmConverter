@@ -1,11 +1,11 @@
-	.text
-	.align	16, 0x90
-	.globl	__gmpn_rsh1sub_nc
+	section .text
+	align 16, db 0x90
+	global __gmpn_rsh1sub_nc
 	
-	.def	__gmpn_rsh1sub_nc
-	.scl	2
-	.type	32
-	.endef
+	;.def	__gmpn_rsh1sub_nc
+	;.scl	2
+	;.type	32
+	;.endef
 __gmpn_rsh1sub_nc:
 
 	push	rdi
@@ -25,13 +25,13 @@ __gmpn_rsh1sub_nc:
 	jmp	Lent
 	
 
-	.align	16, 0x90
-	.globl	__gmpn_rsh1sub_n
+	align 16, db 0x90
+	global __gmpn_rsh1sub_n
 	
-	.def	__gmpn_rsh1sub_n
-	.scl	2
-	.type	32
-	.endef
+	;.def	__gmpn_rsh1sub_n
+	;.scl	2
+	;.type	32
+	;.endef
 __gmpn_rsh1sub_n:
 
 	push	rdi
@@ -99,7 +99,7 @@ Lb0:
 	sbb	ebx, ebx
 	jmp	L4
 
-	.align	16, 0x90
+	align 16, db 0x90
 
 Ltop:
 	add	ebx, ebx

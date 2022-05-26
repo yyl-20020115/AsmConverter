@@ -1,11 +1,11 @@
-	.text
-	.align	16, 0x90
-	.globl	__gmpn_preinv_divrem_1
+	section .text
+	align 16, db 0x90
+	global __gmpn_preinv_divrem_1
 	
-	.def	__gmpn_preinv_divrem_1
-	.scl	2
-	.type	32
-	.endef
+	;.def	__gmpn_preinv_divrem_1
+	;.scl	2
+	;.type	32
+	;.endef
 __gmpn_preinv_divrem_1:
 
 	push	rdi
@@ -35,13 +35,13 @@ __gmpn_preinv_divrem_1:
 	jmp	Lent
 	
 
-	.align	16, 0x90
-	.globl	__gmpn_divrem_1
+	align 16, db 0x90
+	global __gmpn_divrem_1
 	
-	.def	__gmpn_divrem_1
-	.scl	2
-	.type	32
-	.endef
+	;.def	__gmpn_divrem_1
+	;.scl	2
+	;.type	32
+	;.endef
 __gmpn_divrem_1:
 
 	push	rdi
@@ -113,7 +113,7 @@ Lent:
 	sub	rbx, 2
 	js	Lend
 
-	.align	16, 0x90
+	align 16, db 0x90
 Ltop:
 	lea	r11, [rax + 1]
 	mul	r9
@@ -128,7 +128,7 @@ Ltop:
 	lea	rax, [(%r8,%rbp)]
 	sub	rdi, 8
 	cmp	rbp, r13
-;BAD 	cmovc	%rbp, %rax
+	;BAD 	cmovc	%rbp, %rax
 	adc	r11, -1
 	cmp	rax, r8
 	jae	Lufx
@@ -151,7 +151,7 @@ Lend:
 	mov	rax, r8
 	add	rax, rbp
 	cmp	rbp, r11
-;BAD 	cmovc	%rbp, %rax
+	;BAD 	cmovc	%rbp, %rax
 	adc	r13, -1
 	cmp	rax, r8
 	jae	Lefx
@@ -174,7 +174,7 @@ mov	rbp, r8
 	neg	rbp
 	jmp	Lfent
 
-	.align	16, 0x90			
+	align 16, db 0x90
 Lftop:
 mul	r9
 	add	rdx, r11
@@ -184,7 +184,7 @@ mul	r9
 	mov	rax, r8
 	add	rax, rdx
 	cmp	rdx, r11
-;BAD 	cmovc	%rdx, %rax		
+	;BAD 	cmovc	%rdx, %rax		
 	adc	r13, -1
 	mov	[rdi], r13
 	sub	rdi, 8

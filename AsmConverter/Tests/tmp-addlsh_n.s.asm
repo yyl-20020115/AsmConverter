@@ -1,11 +1,11 @@
-	.text
-	.align	32, 0x90
-	.globl	__gmpn_addlsh_n
+	section .text
+	align 32, db 0x90
+	global __gmpn_addlsh_n
 	
-	.def	__gmpn_addlsh_n
-	.scl	2
-	.type	32
-	.endef
+	;.def	__gmpn_addlsh_n
+	;.scl	2
+	;.type	32
+	;.endef
 __gmpn_addlsh_n:
 
 	push	rdi
@@ -15,7 +15,7 @@ __gmpn_addlsh_n:
 	mov	rdx, r8
 	mov	rcx, r9
 
-	mov	%r8d, [rsp + 56]
+	mov	r8d, [rsp + 56]
 	push	rbx
 	xor	ebx, ebx
 Lent:
@@ -23,7 +23,7 @@ Lent:
 	mov	ebp, ecx
 	mov	rax, rcx
 
-	mov	ecx, %r8d
+	mov	ecx, r8d
 	neg	ecx
 
 	lea	rsi, [rsi + rax * 8 - 8]
@@ -38,7 +38,7 @@ Lent:
 	jz	Lb2
 
 Lb3:
-	xor	%r9d, %r9d
+	xor	r9d, r9d
 	mov	r10, [rdx + rax * 8 + 8]
 	mov	r11, [rdx + rax * 8 + 16]
 	shrd	r9, r10, cl
@@ -53,7 +53,7 @@ Lb3:
 
 Lb0:
 	mov	r9, [rdx + rax * 8 + 8]
-	xor	%r8d, %r8d
+	xor	r8d, r8d
 	shrd	r8, r9, cl
 	mov	r10, [rdx + rax * 8 + 16]
 	mov	r11, [rdx + rax * 8 + 24]
@@ -77,7 +77,7 @@ Lb1:
 	xor	ebp, ebp
 	jmp	Llo1
 L1:
-	xor	%r11d, %r11d
+	xor	r11d, r11d
 	jmp	Lwd1
 
 Lb2:
@@ -91,7 +91,7 @@ Lb2:
 	add	rax, 2
 	jz	Lend
 
-	.align	16, 0x90
+	align 16, db 0x90
 Ltop:
 	mov	r9, [rdx + rax * 8 + 8]
 	mov	rbp, r11
@@ -136,12 +136,12 @@ Lwd1:
 	pop	rdi
 	ret
 	
-	.globl	__gmpn_addlsh_nc
+	global __gmpn_addlsh_nc
 	
-	.def	__gmpn_addlsh_nc
-	.scl	2
-	.type	32
-	.endef
+	;.def	__gmpn_addlsh_nc
+	;.scl	2
+	;.type	32
+	;.endef
 __gmpn_addlsh_nc:
 
 	push	rdi
@@ -151,7 +151,7 @@ __gmpn_addlsh_nc:
 	mov	rdx, r8
 	mov	rcx, r9
 
-	mov	%r8d, [rsp + 56]
+	mov	r8d, [rsp + 56]
 	mov	r9, [rsp + 64]
 	push	rbx
 	neg	r9

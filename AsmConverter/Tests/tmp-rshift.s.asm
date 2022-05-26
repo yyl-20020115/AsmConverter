@@ -1,11 +1,11 @@
-	.text
-	.align	16, 0x90
-	.globl	__gmpn_rshift
+	section .text
+	align 16, db 0x90
+	global __gmpn_rshift
 	
-	.def	__gmpn_rshift
-	.scl	2
-	.type	32
-	.endef
+	;.def	__gmpn_rshift
+	;.scl	2
+	;.type	32
+	;.endef
 __gmpn_rshift:
 
 	push	rdi
@@ -69,7 +69,7 @@ Lb11:
 	shr	rdx, 2
 	jz	Lend
 
-	.align	16, 0x90
+	align 16, db 0x90
 Ltop:
 	shrd	r11, r8, cl
 	mov	r10, [rsi - 8]

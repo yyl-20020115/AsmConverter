@@ -1,11 +1,11 @@
-	.text
-	.align	16, 0x90
-	.globl	__gmpn_add_n
+	section .text
+	align 16, db 0x90
+	global __gmpn_add_n
 	
-	.def	__gmpn_add_n
-	.scl	2
-	.type	32
-	.endef
+	;.def	__gmpn_add_n
+	;.scl	2
+	;.type	32
+	;.endef
 __gmpn_add_n:
 	push	rdi
 	push	rsi
@@ -64,7 +64,7 @@ Lend:
 	pop	rdi
 	ret
 
-	.align	16, 0x90
+	align 16, db 0x90
 Ltop:
 	jrcxz	Lend
 	mov	r8, [rsi + rcx * 8]
@@ -90,12 +90,12 @@ Le10:
 	jmp	Ltop
 	
 
-	.globl	__gmpn_add_nc
+	global __gmpn_add_nc
 	
-	.def	__gmpn_add_nc
-	.scl	2
-	.type	32
-	.endef
+	;.def	__gmpn_add_nc
+	;.scl	2
+	;.type	32
+	;.endef
 __gmpn_add_nc:
 
 	push	rdi

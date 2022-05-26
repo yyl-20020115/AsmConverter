@@ -1,11 +1,11 @@
-	.text
-	.align	16, 0x90
-	.globl	__gmpn_divexact_1
+	section .text
+	align 16, db 0x90
+	global __gmpn_divexact_1
 	
-	.def	__gmpn_divexact_1
-	.scl	2
-	.type	32
-	.endef
+	;.def	__gmpn_divexact_1
+	;.scl	2
+	;.type	32
+	;.endef
 __gmpn_divexact_1:
 
 	push	rdi
@@ -33,7 +33,7 @@ Lodd:
 	lea	rdx, [%rip + __gmp_binvert_limb_table]
 
 
-;BAD 	movzbl	(%rdx,%rax), %eax	
+	;BAD 	movzbl	(%rdx,%rax), %eax	
 
 	mov	r11, rbx
 
@@ -73,7 +73,7 @@ Levn:
 	shr	rax, cl
 	jmp	Lodd
 
-	.align	8, 0x90
+	align 8, db 0x90
 Ltop:
 	
 	
@@ -91,7 +91,7 @@ Ltop:
 	shrd	rax, r9, cl
 	nop
 	sub	rax, rbx
-;BAD 	setc	%bl			
+	;BAD 	setc	%bl			
 	sub	rax, rdx
 	adc	rbx, 0
 Lent:

@@ -1,11 +1,11 @@
-	.text
-	.align	32, 0x90
-	.globl	__gmpn_sqr_basecase
+	section .text
+	align 32, db 0x90
+	global __gmpn_sqr_basecase
 	
-	.def	__gmpn_sqr_basecase
-	.scl	2
-	.type	32
-	.endef
+	;.def	__gmpn_sqr_basecase
+	;.scl	2
+	;.type	32
+	;.endef
 __gmpn_sqr_basecase:
 
 	push	rdi
@@ -28,7 +28,7 @@ __gmpn_sqr_basecase:
 	mov	rax, [rsi + 8]
 	mov	r11, rax
 
-	mov	%r8d, 1
+	mov	r8d, 1
 	sub	r8, rdx
 	push	r8
 
@@ -37,11 +37,11 @@ __gmpn_sqr_basecase:
 
 	mul	r10
 
-	test	%r8b, 1
+	test	r8b, 1
 	jnz	Lbx1
 
 Lbx0:
-	test	%r8b, 2
+	test	r8b, 2
 	mov	[rdi + r8 * 8], rax
 	jnz	Lb10
 
@@ -60,7 +60,7 @@ Lb10:
 	jmp	Lm2e2
 
 Lbx1:
-	test	%r8b, 2
+	test	r8b, 2
 	mov	[rdi + r8 * 8], rax
 	jz	Lb11
 
@@ -73,11 +73,11 @@ Lb01:
 Lb11:
 	lea	r13, [r8 - 1]
 	mov	rbp, rdx
-	xor	%r9d, %r9d
+	xor	r9d, r9d
 	jmp	Lm2e3
 
 
-	.align	16, 0x90
+	align 16, db 0x90
 Lm2top1:
 	mul	r10
 	add	r9, rax
@@ -102,10 +102,10 @@ mov	ebp, 0
 	adc	rbp, rdx
 	mov	rax, [rsi + r13 * 8 + 8]
 	mul	r10
-	mov	%r9d, 0
+	mov	r9d, 0
 	add	rcx, rax
 	adc	rbp, rdx
-	adc	%r9d, 0
+	adc	r9d, 0
 	mov	rax, [rsi + r13 * 8 + 8]
 	mul	r11
 	add	rbp, rax
@@ -143,7 +143,7 @@ mov	ebp, 0
 	add	r8, 2
 	jmp	Lam2o3
 
-	.align	16, 0x90
+	align 16, db 0x90
 Lm2top3:
 	mul	r10
 	add	r9, rax
@@ -167,10 +167,10 @@ Lm2top3:
 	adc	rbp, rdx
 	mov	rax, [rsi + r13 * 8 + 8]
 	mul	r10
-	mov	%r9d, 0
+	mov	r9d, 0
 	add	rcx, rax
 	adc	rbp, rdx
-	adc	%r9d, 0
+	adc	r9d, 0
 	mov	rax, [rsi + r13 * 8 + 8]
 	mul	r11
 	add	rbp, rax
@@ -221,10 +221,10 @@ Lam2o1:
 	mov	rcx, [rdi + r8 * 8]
 	xor	ebp, ebp
 	mov	rax, [rsi + r8 * 8 + 8]
-	xor	%r9d, %r9d
+	xor	r9d, r9d
 	jmp	Llo1
 
-	.align	16, 0x90
+	align 16, db 0x90
 Lam2top1:
 	mul	r11
 	add	rcx, rbx
@@ -315,7 +315,7 @@ Lam2o3:
 	mov	rax, [rsi + r8 * 8 + 8]
 	jmp	Llo3
 
-	.align	16, 0x90
+	align 16, db 0x90
 Lam2top3:
 	mul	r11
 	add	rcx, rbx
@@ -406,7 +406,7 @@ pop	r8
 	mov	[rdi], rdx
 	jmp	Lsqr_diag_addlsh1
 
-	.align	16, 0x90
+	align 16, db 0x90
 Lm2top2:
 Lm2e2:
 mul	r10
@@ -431,10 +431,10 @@ mul	r10
 	adc	rbp, rdx
 	mov	rax, [rsi + r13 * 8 + 8]
 	mul	r10
-	mov	%r9d, 0
+	mov	r9d, 0
 	add	rcx, rax
 	adc	rbp, rdx
-	adc	%r9d, 0
+	adc	r9d, 0
 	mov	rax, [rsi + r13 * 8 + 8]
 	mul	r11
 	add	rbp, rax
@@ -472,7 +472,7 @@ mul	r10
 	add	r8, 2
 	jmp	Lam2o0
 
-	.align	16, 0x90
+	align 16, db 0x90
 Lm2top0:
 	mul	r10
 	add	r9, rax
@@ -497,10 +497,10 @@ Lm2top0:
 Lm2e0:
 mov	rax, [rsi + r13 * 8 + 8]
 	mul	r10
-	mov	%r9d, 0
+	mov	r9d, 0
 	add	rcx, rax
 	adc	rbp, rdx
-	adc	%r9d, 0
+	adc	r9d, 0
 	mov	rax, [rsi + r13 * 8 + 8]
 	mul	r11
 	add	rbp, rax
@@ -553,7 +553,7 @@ Lam2o2:
 	mov	rax, [rsi + r8 * 8 + 8]
 	jmp	Llo2
 
-	.align	16, 0x90
+	align 16, db 0x90
 Lam2top2:
 	mul	r11
 	add	rcx, rbx
@@ -640,10 +640,10 @@ Lam2o0:
 	mov	r14, rdx
 	xor	ebx, ebx
 	mov	rbp, [rdi + r8 * 8]
-	xor	%r9d, %r9d
+	xor	r9d, r9d
 	jmp	Llo0
 
-	.align	16, 0x90
+	align 16, db 0x90
 Lam2top0:
 	mul	r11
 	add	rcx, rbx
@@ -761,7 +761,7 @@ Lsqr_diag_addlsh1:
 	add	r11, r11
 	jmp	Ldm
 
-	.align	16, 0x90
+	align 16, db 0x90
 Ldtop:
 mul	rax
 	add	r10, r11
@@ -775,7 +775,7 @@ Ldm:
 	mov	[rdi + r8 * 8], rax
 	mov	rax, [rsi + r8 * 4]
 	adc	r9, r9
-;BAD 	setc	%bl
+	;BAD 	setc	%bl
 	add	r8, 2
 	js	Ldtop
 
@@ -797,7 +797,7 @@ Ldm:
 	pop	rdi
 	ret
 
-	.align	16, 0x90
+	align 16, db 0x90
 Lsmall:
 	mov	rax, [rsi]
 	cmp	rdx, 2

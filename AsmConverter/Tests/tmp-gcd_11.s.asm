@@ -1,11 +1,11 @@
-	.text
-	.align	64, 0x90
-	.globl	__gmpn_gcd_11
+	section .text
+	align 64, db 0x90
+	global __gmpn_gcd_11
 	
-	.def	__gmpn_gcd_11
-	.scl	2
-	.type	32
-	.endef
+	;.def	__gmpn_gcd_11
+	;.scl	2
+	;.type	32
+	;.endef
 __gmpn_gcd_11:
 
 	push	rdi
@@ -15,10 +15,10 @@ __gmpn_gcd_11:
 
 	jmp	Lodd
 
-	.align	16, 0x90
+	align 16, db 0x90
 Ltop:
-;BAD 	cmovc	%rdx, %rdi
-;BAD 	cmovc	%rax, %rsi		
+	;BAD 	cmovc	%rdx, %rdi
+	;BAD 	cmovc	%rax, %rsi		
 	shr	rdi, cl
 Lodd:
 	mov	rdx, rsi

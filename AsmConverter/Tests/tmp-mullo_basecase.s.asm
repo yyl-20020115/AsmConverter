@@ -1,11 +1,11 @@
-	.text
-	.align	32, 0x90
-	.globl	__gmpn_mullo_basecase
+	section .text
+	align 32, db 0x90
+	global __gmpn_mullo_basecase
 	
-	.def	__gmpn_mullo_basecase
-	.scl	2
-	.type	32
-	.endef
+	;.def	__gmpn_mullo_basecase
+	;.scl	2
+	;.type	32
+	;.endef
 __gmpn_mullo_basecase:
 
 	push	rdi
@@ -28,7 +28,7 @@ __gmpn_mullo_basecase:
 	push	rbp
 	lea	rsi, [rsi + rcx * 8]
 	push	r12
-	mov	%r9d, 0
+	mov	r9d, 0
 	sub	r9, rcx
 	push	r13
 	mul	r10
@@ -71,13 +71,13 @@ lea	r13, [r9 + 1]
 
 Lm2b3:
 lea	r13, [r9 - 1]
-	xor	%r12d, %r12d
+	xor	r12d, r12d
 	mov	rcx, rax
 	mov	rbp, rdx
 	mov	rax, [rsi + r9 * 8]
 	jmp	Lm2e3
 
-	.align	16, 0x90
+	align 16, db 0x90
 Lm2tp:
 mul	r10
 	add	r12, rax
@@ -103,10 +103,10 @@ mul	r11
 	adc	rbp, rdx
 	mov	rax, [rsi + r13 * 8 + 8]
 	mul	r10
-	mov	%r12d, 0
+	mov	r12d, 0
 	add	rcx, rax
 	adc	rbp, rdx
-	adc	%r12d, 0
+	adc	r12d, 0
 	mov	rax, [rsi + r13 * 8 + 8]
 Lm2e3:
 mul	r11
@@ -149,7 +149,7 @@ Louter:
 	mov	r11, [r8 + 8]
 	mov	rax, [rsi + r9 * 8]
 	mul	r10
-	test	%r9b, 1
+	test	r9b, 1
 	jnz	La1x1
 
 La1x0:
@@ -157,7 +157,7 @@ mov	r15, rax
 	mov	r14, rdx
 	mov	rax, [rsi + r9 * 8]
 	mul	r11
-	test	%r9b, 2
+	test	r9b, 2
 	jnz	La110
 
 La100:
@@ -180,7 +180,7 @@ mov	r14, rax
 	mov	r15, rdx
 	mov	rax, [rsi + r9 * 8]
 	mul	r11
-	test	%r9b, 2
+	test	r9b, 2
 	jz	La111
 
 La101:
@@ -198,7 +198,7 @@ lea	r13, [r9 - 1]
 	mov	rax, [rsi + r9 * 8 + 8]
 	jmp	Llo3
 
-	.align	16, 0x90
+	align 16, db 0x90
 Ltop:
 	mul	r11
 	add	rcx, rbx
@@ -324,7 +324,7 @@ mov	r11, [r8]
 	pop	rdi
 	ret
 
-	.align	16, 0x90
+	align 16, db 0x90
 Lsmall:
 	cmp	rcx, 2
 	jae	Lgt1
