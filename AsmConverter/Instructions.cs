@@ -14,7 +14,6 @@ namespace AsmConverter
 			"es",
 			"fs",
 			"gs",
-
 		};
 		public static readonly HashSet<string> NasmRegisters = new ()
 		{
