@@ -395,6 +395,11 @@ namespace AsmConverter
                                     instr = instr[..^1];
                                 }
                             }
+                            var oi = orginstr.ToLower();
+                            if(oi == "movsb" || oi == "movsw" || oi == "movsd" || oi=="movsq")
+                            {
+                                instr = orginstr;
+                            }
                             if (far)
                             {
                                 if (operandsTransformed.Count == 1)
