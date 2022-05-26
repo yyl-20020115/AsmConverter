@@ -296,6 +296,7 @@ namespace AsmConverter
                             instr = result[..i]; //partial
                             operands = result[(i + 1)..];
                         }
+                        var orginstr = instr;
                         var instrLower = instr.ToLower();
                         var operandSize = OperandSize.Byte;
 
@@ -318,7 +319,6 @@ namespace AsmConverter
                         {
                             if (Instructions.NasmInstructionNames.Contains(instrLower[..^1]))
                             {
-                                instrLower = instrLower[..^1];
                                 operandSize = instrLower[^1] switch
                                 {
                                     'b' => OperandSize.Byte,
@@ -327,6 +327,7 @@ namespace AsmConverter
                                     'q' => OperandSize.Quad,
                                     _ =>OperandSize.Unknown
                                 };
+                                instrLower = instrLower[..^1];
                                 instr = instr[..^1];
                             }
                         }    
@@ -337,31 +338,55 @@ namespace AsmConverter
                             var operandsTransformed = new List<string>();
                             //opm = base, index, scale
                             var ptr = "";
+                            char ec = ' ';
+              
                             if (instrLower.Length == 5 && 
                                 (instrLower.StartsWith("movz")|| instrLower.StartsWith("movs"))
                                 &&
                                 (instrLower.EndsWith('b') || instrLower.EndsWith('w') || instrLower.EndsWith('l') || instrLower.EndsWith('q')))
                             {
-                                char ec = instrLower[^1];
-                                switch (ec)
+                                ec = instrLower[^1];
+                            }else if (orginstr.Length == 4 &&
+                                (instrLower.StartsWith("mul") || instrLower.StartsWith("div")))
+                            {
+                                //this is a patch
+                                switch (operandSize)
                                 {
-                                    case 'b':
-                                        ptr = "byte ";
+                                    case OperandSize.Byte:
+                                        ec = 'b';
                                         break;
-                                    case 'w':
-                                        ptr = "word ";
+                                    case OperandSize.Word:
+                                        ec = 'w';
                                         break;
-                                    case 'l':
-                                        ptr = "dword ";
+                                    case OperandSize.Long:
+                                        ec = 'l';
                                         break;
-                                    case 'q':
-                                        ptr = "qword ";
+                                    case OperandSize.Quad:
+                                        ec = 'q';
                                         break;
                                 }
-                                if (ptr.Length > 0)
-                                {
+                            }
+
+
+                            switch (ec)
+                            {
+                                case 'b':
+                                    ptr = "byte ";
+                                    break;
+                                case 'w':
+                                    ptr = "word ";
+                                    break;
+                                case 'l':
+                                    ptr = "dword ";
+                                    break;
+                                case 'q':
+                                    ptr = "qword ";
+                                    break;
+                            }
+                            if (ptr.Length > 0)
+                            {
+                                if (instrLower.StartsWith("movz"))
                                     instr = instr[..^1] + "x";
-                                }
                             }
 
                             foreach (var operand in operandsParts.Parts)
@@ -480,6 +505,11 @@ namespace AsmConverter
                                 line = instr;
                                 if (operandsTransformed.Count > 0)
                                 {
+                                    if(instrLower=="shr" && operandsTransformed.Count == 1)
+                                    {
+                                        //fix the shr reg,1 issues
+                                        operandsTransformed.Add("1");
+                                    }
                                     line += "\t" + operandsTransformed.Aggregate((a, b) => a + ", " + b);
                                 }
                             }

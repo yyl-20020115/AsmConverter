@@ -1,7 +1,7 @@
 [Bits 64]
 	align 16, db 0x90
 	global __gmpn_mod_1_1p
-	
+	extern __gmpn_invert_limb
 	;.def	__gmpn_mod_1_1p
 	;.scl	2
 	;.type	32
@@ -67,7 +67,7 @@ Lreduce_two:
 	jz	Lnormalized
 
 	
-	mul	[r8 + 16]
+	mul	qword [r8 + 16]
 	xor	r9, r9
 	add	rbp, rax
 	adc	r9, rdx

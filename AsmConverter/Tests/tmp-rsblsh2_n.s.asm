@@ -111,7 +111,7 @@ Lend:
 
 
 	add	eax, r11d
-	movsx	rax, eax
+	movsl	rax, eax
 
 	pop	r15
 	pop	r14

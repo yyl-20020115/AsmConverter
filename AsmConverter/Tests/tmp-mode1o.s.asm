@@ -39,10 +39,10 @@ Lent:
 	
 
 	mov	r8, rdx
-	shr	edx
+	shr	edx, 1
 
-	
-	lea	r9, [rip + __gmp_binvert_limb_table]
+	db 0x4c,0x8d,0x0d,0x00,0x00,0x00,0x00
+	;lea	__gmp_binvert_limb_table(%rip), %r9
 
 
 	and	edx, 127

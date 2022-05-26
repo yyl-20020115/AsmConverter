@@ -1,7 +1,7 @@
 [Bits 64]
 	align 16, db 0x90
 	global __gmpn_mod_1s_4p
-	
+	extern __gmpn_invert_limb
 	;.def	__gmpn_mod_1s_4p
 	;.scl	2
 	;.type	32

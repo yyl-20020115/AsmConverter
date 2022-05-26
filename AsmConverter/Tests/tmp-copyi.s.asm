@@ -21,7 +21,7 @@ __gmpn_copyi:
 	test	dil, 8
 	jz	Lrp_aligned
 
-	movsx
+	movsq
 	dec	rdx
 
 Lrp_aligned:

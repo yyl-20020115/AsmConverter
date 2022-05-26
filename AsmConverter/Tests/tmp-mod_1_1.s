@@ -1,7 +1,7 @@
 	.text
 	.align	16, 0x90
 	.globl	__gmpn_mod_1_1p
-	
+	.extern __gmpn_invert_limb	
 	.def	__gmpn_mod_1_1p
 	.scl	2
 	.type	32

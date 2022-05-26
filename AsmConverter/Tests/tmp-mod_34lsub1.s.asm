@@ -72,7 +72,7 @@ Ltop:
 
 Lend:
 	lea	r8, [rip + Ltab]
-	movsx	r10, dword [r8 + rsi * 4 + 36]
+	movsl	r10, dword [r8 + rsi * 4 + 36]
 	add	r8, r10
 	jmp	r8
 
