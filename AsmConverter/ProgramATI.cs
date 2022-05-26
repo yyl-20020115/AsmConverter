@@ -65,10 +65,7 @@ namespace AsmConverter
                     {
                         OutputWriter.WriteLine(result[..(p + 1)] + lineEnding);
                         line = result[(p + 1)..];
-                        //if(pre.Length == 0 && lastpre.Length > 0)
-                        //{
-                        //    line = lastpre + line;
-                        //}
+
                         goto do_line;
                     }
                 }
@@ -242,11 +239,7 @@ namespace AsmConverter
                             {
                                 ec = instrLower[^1];
                             }
-                            else if (orginstr.Length == 4 &&
-                                (instrLower.StartsWith("mul") || instrLower.StartsWith("div")))
-                            {
-                                //ok
-                            }
+                            
                             if (ec == ' ' && operandSize != OperandSize.Unknown)
                             {
                                 //this is a patch
@@ -396,10 +389,13 @@ namespace AsmConverter
                                 }
                             }
                             var oi = orginstr.ToLower();
-                            if(oi == "movsb" || oi == "movsw" || oi == "movsd" || oi=="movsq")
+                            if(oi.Length == 5 &&
+                                (oi.StartsWith("movs") ||oi.StartsWith("stos") || oi.StartsWith("lods"))&&
+                                (oi[^1] == 'b' || oi[^1] == 'w' || oi[^1] == 'd' || oi[^1]=='q'))
                             {
                                 instr = orginstr;
                             }
+
                             if (far)
                             {
                                 if (operandsTransformed.Count == 1)
