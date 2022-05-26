@@ -33,8 +33,8 @@ __gmpn_div_qr_2n_pi1:
 	mov	r13, rbx
 	sub	r14, r9
 	sbb	r13, r8
-	;BAD 	cmovnc  %r14, %r12
-	;BAD 	cmovnc	%r13, %rbx
+	cmovnc	r12, r14
+	cmovnc	rbx, r13
 	
 	sbb	rax, rax
 	inc	rax
@@ -68,8 +68,8 @@ Lloop:
 	xor	eax, eax
 	xor	edx, edx
 	cmp	rbx, r14
-	;BAD 	cmovnc	%r9, %rax
-	;BAD 	cmovnc	%r8, %rdx
+	cmovnc	rax, r9
+	cmovnc	rdx, r8
 	adc	r13, 0
 	nop
 	add	r12, rax
@@ -98,9 +98,9 @@ Lend:
 	ret
 
 Lfix:	
-	;BAD 	seta	%dl
+	seta	dl
 	cmp	r12, r9
-	;BAD 	setae	%al
+	setae	al
 	or	al, dl
 	je	Lbck
 	inc	r13

@@ -46,7 +46,7 @@ Lmid:
 	adc	r8, r8
 	adc	r9, r9
 	lea	r10, [rdx + rbx]
-	;BAD 	setc	%bl
+	setc	bl
 	mul	rax
 	add	rcx, 2
 	js	Ltop

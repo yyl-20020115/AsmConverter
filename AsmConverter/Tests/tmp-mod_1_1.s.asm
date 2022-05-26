@@ -48,7 +48,7 @@ Ltop:
 	mul	r11
 	add	rcx, rbp
 	mov	rbp, [rdi + rsi * 8]
-	;BAD 	cmovc	%r9, %rcx
+	cmovc	rcx, r9
 	add	rbp, rax
 	mov	rax, rcx
 	adc	rax, rdx
@@ -83,7 +83,7 @@ Lreduce_two:
 Lnormalized:
 	mov	r9, rax
 	sub	r9, rbx
-	;BAD 	cmovnc	%r9, %rax
+	cmovnc	rax, r9
 
 Ludiv:
 	lea	r9, [rax + 1]
@@ -94,7 +94,7 @@ Ludiv:
 	sub	rbp, rdx
 	cmp	rax, rbp
 	lea	rax, [rbx + rbp]
-	;BAD 	cmovnc	%rbp, %rax
+	cmovnc	rax, rbp
 	cmp	rax, rbx
 	jnc	Lfix
 Lok:

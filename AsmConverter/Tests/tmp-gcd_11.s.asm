@@ -17,8 +17,8 @@ __gmpn_gcd_11:
 
 	align 16, db 0x90
 Ltop:
-	;BAD 	cmovc	%rdx, %rdi
-	;BAD 	cmovc	%rax, %rsi		
+	cmovc	rdi, rdx
+	cmovc	rsi, rax
 	shr	rdi, cl
 Lodd:
 	mov	rdx, rsi

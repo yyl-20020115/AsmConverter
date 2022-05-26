@@ -17,7 +17,7 @@ __gmpn_invert_limb:
 
 	lea	r8, [rip - 512+__gmpn_invert_limb_table]
 
-	;BAD 	movzwl	(%r8,%rax,2), %ecx	
+	movzw	ecx, [r8 + rax * 2]
 
 	
 	mov	rsi, rdi

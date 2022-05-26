@@ -135,10 +135,10 @@ Lend:
 	sub	r8, rdx
 	lea	rax, [r8 + rbx]
 	cmp	r9, r8
-	;BAD 	cmovc	%rax, %r8
+	cmovc	r8, rax
 	mov	rax, r8
 	sub	rax, rbx
-	;BAD 	cmovc	%r8, %rax
+	cmovc	rax, r8
 	shr	rax, cl
 	pop	rbx
 	pop	rbp
@@ -201,7 +201,7 @@ __gmpn_mod_1s_4p_cps:
 	imul	rdx, r12
 	lea	rsi, [rdx + r12]
 	cmp	rax, rdx
-	;BAD 	cmovnc	%rdx, %rsi
+	cmovnc	rsi, rdx
 	mov	rax, r11
 	mul	rsi
 
@@ -213,7 +213,7 @@ __gmpn_mod_1s_4p_cps:
 	imul	rdx, r12
 	lea	rsi, [rdx + r12]
 	cmp	rax, rdx
-	;BAD 	cmovnc	%rdx, %rsi
+	cmovnc	rsi, rdx
 	mov	rax, r11
 	mul	rsi
 
@@ -225,7 +225,7 @@ __gmpn_mod_1s_4p_cps:
 	imul	rdx, r12
 	lea	rsi, [rdx + r12]
 	cmp	rax, rdx
-	;BAD 	cmovnc	%rdx, %rsi
+	cmovnc	rsi, rdx
 	mov	rax, r11
 	mul	rsi
 
@@ -237,7 +237,7 @@ __gmpn_mod_1s_4p_cps:
 	imul	rdx, r12
 	add	r12, rdx
 	cmp	rax, rdx
-	;BAD 	cmovnc	%rdx, %r12
+	cmovnc	r12, rdx
 
 	shr	r12, cl
 	mov	[rbx + 48], r12

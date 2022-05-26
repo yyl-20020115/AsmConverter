@@ -72,7 +72,7 @@ Ltop:
 
 Lend:
 	lea	r8, [rip + Ltab]
-	;BAD 	movslq	36(%r8,%rsi,4), %r10
+	movsl	r10, [r8 + rsi * 4 + 36]
 	add	r8, r10
 	jmp	*%r8
 
@@ -154,7 +154,7 @@ L0:
 	shr	rcx, 32
 
 	add	rax, rdi
-	;BAD 	movzwl	%dx, %edi		
+	movzw	edi, dx
 	shl	r10, 16
 
 	add	rax, rcx

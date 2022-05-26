@@ -48,7 +48,7 @@ Lent:
 	and	edx, 127
 	mov	r10, rcx
 
-	;BAD 	movzbl	(%r9,%rdx), %edx	
+	movzb	edx, [r9 + rdx]
 
 	mov	rax, [rdi]
 	lea	r11, [rdi + rsi * 8]
@@ -105,7 +105,7 @@ Ltop:
 
 	mov	rax, [r11 + rsi * 8]
 	sub	rax, rcx
-	;BAD 	setc	%cl		
+	setc	cl
 
 	inc	rsi
 	jnz	Ltop

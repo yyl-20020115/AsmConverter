@@ -33,9 +33,9 @@ __gmpn_divrem_2:
 	xor	r15d, r15d
 	cmp	r11, rbx
 	ja	L2
-	set	dl
+	setb	dl
 	cmp	r8, r10
-	;BAD 	setbe	%al
+	setbe	al
 	or	dl, al
 	je	L2
 	inc	r15d
@@ -109,8 +109,8 @@ L19:
 	xor	eax, eax
 	xor	edx, edx
 	cmp	rbx, rcx
-	;BAD 	cmovnc	%r8, %rax		
-	;BAD 	cmovnc	%r11, %rdx		
+	cmovnc	rax, r8
+	cmovnc	rdx, r11
 	adc	r9, 0
 	nop
 	add	r10, rax
@@ -138,9 +138,9 @@ Lend:
 	ret
 
 Lfix:
-	;BAD 	seta	%dl
+	seta	dl
 	cmp	r10, r8
-	;BAD 	setae	%al
+	setae	al
 	or	al, dl
 	je	Lbck
 	inc	r9

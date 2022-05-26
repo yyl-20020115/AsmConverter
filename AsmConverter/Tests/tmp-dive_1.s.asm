@@ -33,7 +33,7 @@ Lodd:
 	lea	rdx, [rip + __gmp_binvert_limb_table]
 
 
-	;BAD 	movzbl	(%rdx,%rax), %eax	
+	movzb	eax, [rdx + rax]
 
 	mov	r11, rbx
 
@@ -91,7 +91,7 @@ Ltop:
 	shrd	rax, r9, cl
 	nop
 	sub	rax, rbx
-	;BAD 	setc	%bl			
+	setc	bl
 	sub	rax, rdx
 	adc	rbx, 0
 Lent:

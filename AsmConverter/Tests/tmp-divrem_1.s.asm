@@ -128,7 +128,7 @@ Ltop:
 	lea	rax, [r8 + rbp]
 	sub	rdi, 8
 	cmp	rbp, r13
-	;BAD 	cmovc	%rbp, %rax
+	cmovc	rax, rbp
 	adc	r11, -1
 	cmp	rax, r8
 	jae	Lufx
@@ -151,7 +151,7 @@ Lend:
 	mov	rax, r8
 	add	rax, rbp
 	cmp	rbp, r11
-	;BAD 	cmovc	%rbp, %rax
+	cmovc	rax, rbp
 	adc	r13, -1
 	cmp	rax, r8
 	jae	Lefx
@@ -184,7 +184,7 @@ mul	r9
 	mov	rax, r8
 	add	rax, rdx
 	cmp	rdx, r11
-	;BAD 	cmovc	%rdx, %rax		
+	cmovc	rax, rdx
 	adc	r13, -1
 	mov	[rdi], r13
 	sub	rdi, 8

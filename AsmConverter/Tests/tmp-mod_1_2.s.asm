@@ -122,10 +122,10 @@ L1:
 	sub	r8, rdx
 	lea	rax, [r8 + r14]
 	cmp	rsi, r8
-	;BAD 	cmovc	%rax, %r8
+	cmovc	r8, rax
 	mov	rax, r8
 	sub	rax, r14
-	;BAD 	cmovc	%r8, %rax
+	cmovc	rax, r8
 	mov	ecx, edi
 	shr	rax, cl
 	pop	rbx
@@ -193,7 +193,7 @@ __gmpn_mod_1s_2p_cps:
 	imul	rdx, r12
 	lea	rsi, [rdx + r12]
 	cmp	rax, rdx
-	;BAD 	cmovnc	%rdx, %rsi
+	cmovnc	rsi, rdx
 	mov	rax, r11
 	mul	rsi
 
@@ -205,7 +205,7 @@ __gmpn_mod_1s_2p_cps:
 	imul	rdx, r12
 	add	r12, rdx
 	cmp	rax, rdx
-	;BAD 	cmovnc	%rdx, %r12
+	cmovnc	r12, rdx
 
 	shr	r12, cl
 	mov	[rbx + 32], r12

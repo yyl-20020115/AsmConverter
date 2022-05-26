@@ -775,7 +775,7 @@ Ldm:
 	mov	[rdi + r8 * 8], rax
 	mov	rax, [rsi + r8 * 4]
 	adc	r9, r9
-	;BAD 	setc	%bl
+	setc	bl
 	add	r8, 2
 	js	Ldtop
 

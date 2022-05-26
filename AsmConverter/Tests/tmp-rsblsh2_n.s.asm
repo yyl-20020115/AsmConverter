@@ -111,7 +111,7 @@ Lend:
 
 
 	add	eax, r11d
-	;BAD 	movslq	%eax, %rax
+	movsl	rax, eax
 
 	pop	r15
 	pop	r14

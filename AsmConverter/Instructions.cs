@@ -2297,10 +2297,33 @@ namespace AsmConverter
 			"jg",
 			"jnle",
 			"jl",
+			"jle",
 			"jnge",
 			"jge",
 			"jnl",
-			"set"
+			"setg",
+			"setl",
+			"setz",
+			"setnz",
+			"sete",
+			"setne",
+			"setge",
+			"setle",
+			"seta",
+			"setae",
+			"setna",
+			"setb",
+			"setbe",
+
+			"setc",
+			"movsl",
+			"movsb",
+			"movsw",
+			"movzb",
+			"movzw",
+			"movzl",
+			"cmovc",
+			"cmovnc"
 		};
 	}
 

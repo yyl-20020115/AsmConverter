@@ -28,7 +28,7 @@ __gmpn_hamdist:
 
 	lea	r9, [rip + Ltab]
 
-	;BAD 	movslq	(%r9,%r8,4), %r8
+	movsl	r8, [r9 + r8 * 4]
 	add	r8, r9
 	jmp	*%r8
 
@@ -40,7 +40,7 @@ L3:
 	xor	r11, [rsi + 16]
 	xor	ebp, ebp
 	sub	rdx, 4
-	;BAD 	jle	Lx3
+	jle	Lx3
 	mov	r8, [rdi + 24]
 	mov	r9, [rdi + 32]
 	add	rdi, 24
@@ -58,7 +58,7 @@ L0:
 	add	rdi, 32
 	add	rsi, 32
 	sub	rdx, 4
-	;BAD 	jle	Lx4
+	jle	Lx4
 
 	align 16, db 0x90
 Ltop:
@@ -109,7 +109,7 @@ L2:
 	mov	r11, [rdi + 8]
 	xor	r11, [rsi + 8]
 	sub	rdx, 2
-	;BAD 	jle	Ln2
+	jle	Ln2
 	mov	r8, [rdi + 16]
 	mov	r9, [rdi + 24]
 	xor	ebx, ebx
@@ -124,7 +124,7 @@ Ln2:
 
 L1:
 	dec	rdx
-	;BAD 	jle	Lx1
+	jle	Lx1
 	mov	r8, [rdi + 8]
 	mov	r9, [rdi + 16]
 	xor	r8, [rsi + 8]
