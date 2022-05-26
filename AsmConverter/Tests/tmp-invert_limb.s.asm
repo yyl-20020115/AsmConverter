@@ -17,11 +17,9 @@ __gmpn_invert_limb:
 	
 	db 0x4c,0x8d,0x05,0x00,0xfe,0xff,0xff
 	;lea	r8, [rip - 512+__gmpn_invert_limb_table]
-	db 0x41,0x0f,0xb7,0x0c,0x40
-	;movzw	ecx, [r8 + rax * 2]
-
+	
 	;lea	-512+__gmpn_invert_limb_table(%rip), %r8
-	;movzwl	(%r8,%rax,2), %ecx	
+	movzx	ecx, word [r8 + rax * 2]
 
 	
 	mov	rsi, rdi

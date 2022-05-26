@@ -314,10 +314,7 @@ namespace AsmConverter
                         {
                             if (Instructions.NasmInstructionNames.Contains(instrLower[..^1]))
                             {
-                                if (!Instructions.NasmInstructionNames.Contains(instrLower))
-                                {
-                                    instrLower = instrLower[..^1];
-                                }
+                                instrLower = instrLower[..^1];
                                 operandSize = instrLower[^1] switch
                                 {
                                     'b' => OperandSize.Byte,
@@ -334,8 +331,34 @@ namespace AsmConverter
                         {
                             var operandsParts = Split(operands, ',');
                             var operandsTransformed = new List<string>();
+                            //opm = base, index, scale
+                            var ptr = "";
+                            if (instrLower.Length == 5 && instrLower.StartsWith("movz") &&
+                                (instrLower.EndsWith('b') || instrLower.EndsWith('w') || instrLower.EndsWith('l') || instrLower.EndsWith('q')))
+                            {
+                                char ec = instrLower[^1];
+                                switch (ec)
+                                {
+                                    case 'b':
+                                        ptr = "byte ";
+                                        break;
+                                    case 'w':
+                                        ptr = "word ";
+                                        break;
+                                    case 'l':
+                                        ptr = "dword ";
+                                        break;
+                                    case 'q':
+                                        ptr = "qword ";
+                                        break;
+                                }
+                                if (ptr.Length > 0)
+                                {
+                                    instr = instr[..^1] + "x";
+                                }
+                            }
 
-                            foreach(var operand in operandsParts.Parts)
+                            foreach (var operand in operandsParts.Parts)
                             {
                                 var operandTrimmed = operand.Trim();
                                 if (operandTrimmed.StartsWith('$'))
@@ -372,7 +395,7 @@ namespace AsmConverter
                                         disp = operandTrimmeds[..po];
                                         operandTrimmeds = operandTrimmeds[po..];
                                     }
-                                    //opm = base, index, scale
+
                                     var operandsList = new List<string>();
                                     var operandsSplitted = Split(operandTrimmeds, keep_bound: false);
                                     foreach(var operandPart in operandsSplitted.Parts)
@@ -420,33 +443,9 @@ namespace AsmConverter
                                     if (operandsSplitted.Enclosed 
                                         || operandsSplitted.Parts.Count>1)
                                     {
-                                        var ptr = "";
-                                        if (instrLower.Length == 5 && instrLower.StartsWith("movz") && 
-                                            (instrLower.EndsWith('b')|| instrLower.EndsWith('w')|| instrLower.EndsWith('l')|| instrLower.EndsWith('q')))
-                                        {
-                                            char ec = instrLower[^1];
-                                            switch (ec)
-                                            {
-                                                case 'b':
-                                                    ptr = "byte ";
-                                                    break;
-                                                case 'w':
-                                                    ptr = "word ";
-                                                    break;
-                                                case 'l':
-                                                    ptr = "dword ";
-                                                    break;
-                                                case 'q':
-                                                    ptr = "qword ";
-                                                    break;
-                                            }
-                                            if (ptr.Length > 0)
-                                            {
-                                                instr = instr[..^1]+"x";
-                                            }
-                                        }
                                         operandTrimmed =
                                            ptr + "[" + sectionRegister + operandTrimmeds + "]";
+                                        ptr = "";
                                     }
                                     else
                                     {
@@ -455,6 +454,7 @@ namespace AsmConverter
 
                                     operandsTransformed.Add(operandTrimmed);
                                 }
+
                             }
 
                             if (far)

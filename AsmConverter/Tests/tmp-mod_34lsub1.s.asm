@@ -154,7 +154,7 @@ L0:
 	shr	rcx, 32
 
 	add	rax, rdi
-	movzw	edi, dx
+	movzx	edi, dx
 	shl	r10, 16
 
 	add	rax, rcx
