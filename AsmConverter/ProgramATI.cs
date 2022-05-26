@@ -27,13 +27,13 @@ namespace AsmConverter
                     {
                         case Bits.Bits16:
                             OutputWriter.WriteLine("[Bits 16]");
-                            continue;
+                            break;
                         case Bits.Bits32:
                             OutputWriter.WriteLine("[Bits 32]");
-                            continue;
+                            break;
                         case Bits.Bits64:
                             OutputWriter.WriteLine("[Bits 64]");
-                            continue;
+                            break;
                     }
                 }
                 var lineEnding = "";
@@ -140,7 +140,6 @@ namespace AsmConverter
                                     break;
                             }
                         }
-
                         else if (resultLower == ".text")
                         {
                             line = "section .text";
