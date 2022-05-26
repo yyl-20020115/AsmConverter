@@ -1,4 +1,4 @@
-	section .text
+[Bits 64]
 	align 16, db 0x90
 	global __gmpn_bdiv_q_1
 	
@@ -30,24 +30,24 @@ Lodd:
 	and	eax, 127
 
 	
-	lea	rdx, [%rip + __gmp_binvert_limb_table]
+	lea	rdx, [rip + __gmp_binvert_limb_table]
 
 
 	;BAD 	movzbl	(%rdx,%rax), %eax	
 
 	mov	r11, rbx
 
-	lea	edx, [(%rax,%rax)]
+	lea	edx, [rax + rax]
 	imul	eax, eax
 	imul	eax, ebx
 	sub	edx, eax
 
-	lea	eax, [(%rdx,%rdx)]
+	lea	eax, [rdx + rdx]
 	imul	edx, edx
 	imul	edx, ebx
 	sub	eax, edx
 
-	lea	r8, [(%rax,%rax)]
+	lea	r8, [rax + rax]
 	imul	rax, rax
 	imul	rax, rbx
 	sub	r8, rax

@@ -1,4 +1,4 @@
-	section .text
+[Bits 64]
 	align 16, db 0x90
 	global __gmpn_mod_1_1p
 	
@@ -44,7 +44,7 @@ Lfirst:
 	align 16, db 0x90
 Ltop:
 	and	rcx, r11
-	lea	r9, [(%r10, %rbp)]
+	lea	r9, [r10 + rbp]
 	mul	r11
 	add	rcx, rbp
 	mov	rbp, [rdi + rsi * 8]
@@ -93,7 +93,7 @@ Ludiv:
 	imul	rdx, rbx
 	sub	rbp, rdx
 	cmp	rax, rbp
-	lea	rax, [(%rbx, %rbp)]
+	lea	rax, [rbx + rbp]
 	;BAD 	cmovnc	%rbp, %rax
 	cmp	rax, rbx
 	jnc	Lfix

@@ -1,4 +1,4 @@
-	section .text
+[Bits 64]
 	align 32, db 0x90
 	global __gmpn_nior_n
 	

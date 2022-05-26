@@ -1,4 +1,4 @@
-	section .text
+[Bits 64]
 	align 16, db 0x90
 	global __gmpn_bdiv_dbm1c
 	
@@ -25,7 +25,7 @@ __gmpn_bdiv_dbm1c:
 	neg	r9
 	and	r11d, 3
 	jz	Llo0
-	lea	r9, [(%r9,%r11) - 4]
+	lea	r9, [r9 + r11 - 4]
 	cmp	r11d, 2
 	jc	Llo1
 	jz	Llo2

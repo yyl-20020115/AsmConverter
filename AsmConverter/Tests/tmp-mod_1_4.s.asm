@@ -1,4 +1,4 @@
-	section .text
+[Bits 64]
 	align 16, db 0x90
 	global __gmpn_mod_1s_4p
 	
@@ -133,7 +133,7 @@ Lend:
 	adc	rdx, rdi
 	imul	rdx, rbx
 	sub	r8, rdx
-	lea	rax, [(%r8,%rbx)]
+	lea	rax, [r8 + rbx]
 	cmp	r9, r8
 	;BAD 	cmovc	%rax, %r8
 	mov	rax, r8
@@ -199,7 +199,7 @@ __gmpn_mod_1s_4p_cps:
 
 	not	rdx
 	imul	rdx, r12
-	lea	rsi, [(%rdx,%r12)]
+	lea	rsi, [rdx + r12]
 	cmp	rax, rdx
 	;BAD 	cmovnc	%rdx, %rsi
 	mov	rax, r11
@@ -211,7 +211,7 @@ __gmpn_mod_1s_4p_cps:
 
 	not	rdx
 	imul	rdx, r12
-	lea	rsi, [(%rdx,%r12)]
+	lea	rsi, [rdx + r12]
 	cmp	rax, rdx
 	;BAD 	cmovnc	%rdx, %rsi
 	mov	rax, r11
@@ -223,7 +223,7 @@ __gmpn_mod_1s_4p_cps:
 
 	not	rdx
 	imul	rdx, r12
-	lea	rsi, [(%rdx,%r12)]
+	lea	rsi, [rdx + r12]
 	cmp	rax, rdx
 	;BAD 	cmovnc	%rdx, %rsi
 	mov	rax, r11

@@ -12,12 +12,21 @@ namespace AsmConverter
             Long = 3,
             Quad = 4,
         }
+
+        public enum Bits : uint
+        {
+            Unknown = 0,
+            Bits16 = 1,
+            Bits32 = 2,
+            Bits64 = 3,
+        }
         public enum ConvertDirection : uint
         {
             Undefined = 0,
             ATT_To_Intel = 1,
             Intel_To_ATT = 2,
         }
+        public static Bits DefaultBits = Bits.Bits64;
         public static int IndexOfWhitespace(string s)
         {
             int ri = -1;
@@ -102,6 +111,21 @@ namespace AsmConverter
             {
             do_line:
                 lineno++;
+                if (lineno == 1)
+                {
+                    switch (DefaultBits)
+                    {
+                        case Bits.Bits16:
+                            OutputWriter.WriteLine("[Bits 16]");
+                            continue;
+                        case Bits.Bits32:
+                            OutputWriter.WriteLine("[Bits 32]");
+                            continue;
+                        case Bits.Bits64:
+                            OutputWriter.WriteLine("[Bits 64]");
+                            continue;
+                    }
+                }
                 var lineEnding = "";
                 var sp = line.IndexOfAny(new [] { '#', ';' });
                 if (sp >= 0)
@@ -304,6 +328,12 @@ namespace AsmConverter
                                     if (operandsList.Count == 1)
                                     {
                                         operandTrimmeds = operandsList[0];
+                                    }
+                                    else if (operandsList.Count == 2)
+                                    {
+                                        operandTrimmeds = operandsList[0];
+                                        operandTrimmeds += operandTrimmeds.Length == 0 ? String.Empty : " + ";
+                                        operandTrimmeds += operandsList[1];
                                     }
                                     else if (operandsList.Count == 3)
                                     {

@@ -1,4 +1,4 @@
-	section .text
+[Bits 64]
 	align 16, db 0x90
 	global __gmpn_preinv_divrem_1
 	
@@ -125,7 +125,7 @@ Ltop:
 	mov	r11, rdx
 	imul	rdx, r8
 	sub	rbp, rdx
-	lea	rax, [(%r8,%rbp)]
+	lea	rax, [r8 + rbp]
 	sub	rdi, 8
 	cmp	rbp, r13
 	;BAD 	cmovc	%rbp, %rax

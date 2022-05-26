@@ -1,4 +1,4 @@
-	section .text
+[Bits 64]
 	align 32, db 0x90
 	global __gmpn_mul_basecase
 	
@@ -50,7 +50,7 @@ Lm1s0:
 	mov	[rdi + r9 * 8], rax
 	mov	rax, [rsi + r9 * 8 + 8]
 	mov	rbx, rdx
-	lea	rbp, [%rip + Ldo_am0]
+	lea	rbp, [rip + Ldo_am0]
 	jmp	Lm1e0
 
 Lm1s2:
@@ -59,7 +59,7 @@ Lm1s2:
 	mov	rax, [rsi + r9 * 8 + 8]
 	mov	rbx, rdx
 	mul	r10
-	lea	rbp, [%rip + Ldo_am2]
+	lea	rbp, [rip + Ldo_am2]
 	test	r13, r13
 	jnz	Lm1e2
 	add	rbx, rax
@@ -79,7 +79,7 @@ Lm1s1:
 	jz	L1
 	mov	rax, [rsi + r9 * 8 + 8]
 	mov	rcx, rdx
-	lea	rbp, [%rip + Ldo_am1]
+	lea	rbp, [rip + Ldo_am1]
 	jmp	Lm1e1
 L1:
 	mov	[rdi], rdx
@@ -90,7 +90,7 @@ Lm1s3:
 	mov	[rdi + r9 * 8], rax
 	mov	rax, [rsi + r9 * 8 + 8]
 	mov	rcx, rdx
-	lea	rbp, [%rip + Ldo_am3]
+	lea	rbp, [rip + Ldo_am3]
 	jmp	Lm1e3
 
 	align 16, db 0x90

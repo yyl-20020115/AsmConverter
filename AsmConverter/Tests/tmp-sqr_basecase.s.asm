@@ -1,4 +1,4 @@
-	section .text
+[Bits 64]
 	align 32, db 0x90
 	global __gmpn_sqr_basecase
 	
@@ -768,7 +768,7 @@ mul	rax
 	mov	r11, [rdi + r8 * 8 + 8]
 	mov	[rdi + r8 * 8 - 8], r10
 	adc	rax, r9
-	lea	r10, [(%rdx,%rbx)]
+	lea	r10, [rdx + rbx]
 	mov	r9, [rdi + r8 * 8 + 16]
 	adc	r11, r11
 Ldm:
@@ -783,7 +783,7 @@ Ldm:
 	add	r10, r11
 	mov	[rdi - 8], r10
 	adc	rax, r9
-	lea	r10, [(%rdx,%rbx)]
+	lea	r10, [rdx + rbx]
 	mov	[rdi], rax
 	adc	r10, 0
 	mov	[rdi + 8], r10

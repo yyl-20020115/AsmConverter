@@ -1,4 +1,4 @@
-	section .text
+[Bits 64]
 	align 32, db 0x90
 	global __gmpn_sqr_diag_addlsh1
 	
@@ -45,7 +45,7 @@ Lmid:
 	mov	r9, [rsi + rcx * 8 + 8]
 	adc	r8, r8
 	adc	r9, r9
-	lea	r10, [(%rdx,%rbx)]
+	lea	r10, [rdx + rbx]
 	;BAD 	setc	%bl
 	mul	rax
 	add	rcx, 2

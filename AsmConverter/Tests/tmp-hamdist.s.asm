@@ -1,4 +1,4 @@
-	section .text
+[Bits 64]
 	align 32, db 0x90
 	global __gmpn_hamdist
 	
@@ -26,7 +26,7 @@ __gmpn_hamdist:
 	xor	ecx, ecx
 		.byte	0xf3,0x49,0x0f,0xb8,0xc2	
 
-	lea	r9, [%rip + Ltab]
+	lea	r9, [rip + Ltab]
 
 	;BAD 	movslq	(%r9,%r8,4), %r8
 	add	r8, r9

@@ -1,4 +1,4 @@
-	section .text
+[Bits 64]
 	align 32, db 0x90
 	global __gmpn_mod_34lsub1
 	
@@ -71,7 +71,7 @@ Ltop:
 	jnc	Ltop
 
 Lend:
-	lea	r8, [%rip + Ltab]
+	lea	r8, [rip + Ltab]
 	;BAD 	movslq	36(%r8,%rsi,4), %r10
 	add	r8, r10
 	jmp	*%r8

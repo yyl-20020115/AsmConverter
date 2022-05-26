@@ -1,4 +1,4 @@
-	section .text
+[Bits 64]
 	align 16, db 0x90
 	global __gmpn_invert_limb
 	
@@ -15,7 +15,7 @@ __gmpn_invert_limb:
 	mov	rax, rdi
 	shr	rax, 55
 
-	lea	r8, [%rip - 512+__gmpn_invert_limb_table]
+	lea	r8, [rip - 512+__gmpn_invert_limb_table]
 
 	;BAD 	movzwl	(%r8,%rax,2), %ecx	
 

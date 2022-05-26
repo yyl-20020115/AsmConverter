@@ -1,4 +1,4 @@
-	section .text
+[Bits 64]
 	align 16, db 0x90
 	global __gmpn_div_qr_2n_pi1
 	
@@ -58,7 +58,7 @@ Lloop:
 	mov	r13, rdx
 	imul	rdx, r15
 	mov	rax, r9
-	lea	rbx, [(%rdx, %r12)]
+	lea	rbx, [rdx + r12]
 	mul	r13
 	mov	r12, [r11 + rcx * 8]
 	sub	r12, r9

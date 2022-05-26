@@ -1,4 +1,4 @@
-	section .text
+[Bits 64]
 	align 16, db 0x90
 	global __gmpn_mod_1s_2p
 	
@@ -120,7 +120,7 @@ L1:
 	adc	rdx, r9
 	imul	rdx, r14
 	sub	r8, rdx
-	lea	rax, [(%r8,%r14)]
+	lea	rax, [r8 + r14]
 	cmp	rsi, r8
 	;BAD 	cmovc	%rax, %r8
 	mov	rax, r8
@@ -191,7 +191,7 @@ __gmpn_mod_1s_2p_cps:
 
 	not	rdx
 	imul	rdx, r12
-	lea	rsi, [(%rdx,%r12)]
+	lea	rsi, [rdx + r12]
 	cmp	rax, rdx
 	;BAD 	cmovnc	%rdx, %rsi
 	mov	rax, r11

@@ -1,4 +1,4 @@
-	section .text
+[Bits 64]
 	align 16, db 0x90
 	global __gmpn_divrem_2
 	
@@ -42,7 +42,7 @@ __gmpn_divrem_2:
 	sub	r10, r8
 	sbb	rbx, r11
 L2:
-	lea	r14, [(%rcx,%r13) - 3]
+	lea	r14, [rcx + r13 - 3]
 	test	r14, r14
 	js	Lend
 
@@ -94,7 +94,7 @@ Ltop:
 	mov	r9, rdx
 	imul	rdx, rsi
 	mov	rax, r8
-	lea	rbx, [(%rdx, %r10)]
+	lea	rbx, [rdx + r10]
 	xor	r10d, r10d
 	mul	r9
 	cmp	r13, r14

@@ -1,4 +1,4 @@
-	section .text
+[Bits 64]
 	align 8, db 0x90
 	global __gmpn_sublsh1_n
 	

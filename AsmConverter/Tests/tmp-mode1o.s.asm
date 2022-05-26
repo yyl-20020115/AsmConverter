@@ -1,4 +1,4 @@
-	section .text
+[Bits 64]
 	align 32, db 0x90
 	global __gmpn_modexact_1_odd
 	
@@ -42,7 +42,7 @@ Lent:
 	shr	edx
 
 	
-	lea	r9, [%rip + __gmp_binvert_limb_table]
+	lea	r9, [rip + __gmp_binvert_limb_table]
 
 
 	and	edx, 127
@@ -54,7 +54,7 @@ Lent:
 	lea	r11, [rdi + rsi * 8]
 	mov	rdi, r8
 
-	lea	ecx, [(%rdx,%rdx)]
+	lea	ecx, [rdx + rdx]
 	imul	edx, edx
 
 	neg	rsi
@@ -63,7 +63,7 @@ Lent:
 
 	sub	ecx, edx
 
-	lea	edx, [(%rcx,%rcx)]
+	lea	edx, [rcx + rcx]
 	imul	ecx, ecx
 
 	imul	ecx, edi
@@ -71,7 +71,7 @@ Lent:
 	sub	edx, ecx
 	xor	ecx, ecx
 
-	lea	r9, [(%rdx,%rdx)]
+	lea	r9, [rdx + rdx]
 	imul	rdx, rdx
 
 	imul	rdx, r8
@@ -119,7 +119,7 @@ Lone:
 
 	mul	r8
 
-	lea	rax, [(%rcx,%rdx)]
+	lea	rax, [rcx + rdx]
 	pop	rsi
 	pop	rdi
 	ret
