@@ -337,7 +337,9 @@ namespace AsmConverter
                             var operandsTransformed = new List<string>();
                             //opm = base, index, scale
                             var ptr = "";
-                            if (instrLower.Length == 5 && instrLower.StartsWith("movz") &&
+                            if (instrLower.Length == 5 && 
+                                (instrLower.StartsWith("movz")|| instrLower.StartsWith("movs"))
+                                &&
                                 (instrLower.EndsWith('b') || instrLower.EndsWith('w') || instrLower.EndsWith('l') || instrLower.EndsWith('q')))
                             {
                                 char ec = instrLower[^1];

@@ -22,7 +22,7 @@ __gmpn_popcount:
 
 	lea	r9, [rip + Ltab]
 
-	movsl	r8, [r9 + r8 * 4]
+	movsx	r8, dword [r9 + r8 * 4]
 	add	r8, r9
 	jmp	r8
 
