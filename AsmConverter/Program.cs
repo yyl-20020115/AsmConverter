@@ -20,6 +20,17 @@ namespace AsmConverter
             Bits32 = 2,
             Bits64 = 3,
         }
+        public static string FixRegister(string s)
+        {
+            if(s == "sil")
+            {
+                return "si";
+            }else if(s == "dil")
+            {
+                return "di";
+            }
+            return s;
+        }
         public enum ConvertDirection : uint
         {
             Undefined = 0,
@@ -107,6 +118,7 @@ namespace AsmConverter
             var indef = false;
             var outdef = false;
             var lastpre = "";
+            var align = 1;
             while(InputReader.ReadLine() is string line)
             {
             do_line:
@@ -192,9 +204,53 @@ namespace AsmConverter
                                 line =  "global " + result[rp..].Trim();
                             }
                         }
-                        else if(resultLower == ".text")
+                        else if (resultLower.StartsWith(".extern"))
+                        {
+                            int rp = IndexOfWhitespace(result);
+                            if (rp >= 0)
+                            {
+                                line = "extern " + result[rp..].Trim();
+                            }
+                        }
+                        else if (resultLower.StartsWith(".byte"))
+                        {
+                            line = "db " + result[(".byte".Length + 1)..];
+                        }
+                        else if (resultLower.StartsWith(".long"))
+                        {
+                            line = "dd " + result[(".long".Length + 1)..];
+                        }
+                        else if (resultLower.StartsWith(".value"))
+                        {
+                            switch (align)
+                            {
+                                case 1:
+                                    line = "db " + result[(".value".Length + 1)..];
+                                    break;
+                                case 2:
+                                    line = "dw " + result[(".value".Length + 1)..];
+                                    break;
+                                case 4:
+                                    line = "dd " + result[(".value".Length + 1)..];
+                                    break;
+                                case 8:
+                                    line = "dq " + result[(".value".Length + 1)..];
+                                    break;
+                            }
+                        }
+
+                        else if (resultLower == ".text")
                         {
                             line = "section .text";
+                        }
+                        else if(resultLower.StartsWith(".section") && char.IsWhiteSpace(resultLower,".section".Length))
+                        {
+                            var ps = resultLower[(".section".Length + 1)..].Trim();
+                            var ts = Split(ps);
+                            if (ts.Parts.Count >= 1)
+                            {
+                                line = "section " + ts.Parts[0];
+                            }
                         }
                         //align
                         else if (resultLower.StartsWith(".align") && char.IsWhiteSpace(resultLower, ".align".Length))
@@ -210,6 +266,10 @@ namespace AsmConverter
                                 else
                                 {
                                     line = "align " + ts.Parts[0];
+                                }
+                                if (int.TryParse(ts.Parts[0],out var _align))
+                                {
+                                    align = _align;
                                 }
                             }
                         }
@@ -241,6 +301,13 @@ namespace AsmConverter
                             instr = instr[1..];
                             far = true;
                             if (instrLower != "lret") star = true;
+                        }
+                        if(instrLower.StartsWith("j") || instrLower == "call")
+                        {
+                            if (operands.StartsWith('*'))
+                            {
+                                operands = operands[1..];
+                            }
                         }
 
                         if (instrLower.EndsWith('b')|| instrLower.EndsWith('w')|| instrLower.EndsWith('l')|| instrLower.EndsWith('q'))
@@ -290,6 +357,7 @@ namespace AsmConverter
                                             (sr[1..] is String srt)
                                             && Instructions.NasmRegisters.Contains(srt))
                                         {
+                                            srt = FixRegister(srt);
                                             sectionRegister = srt + ":";
                                         }
                                         operandTrimmeds = operandTrimmed[(colonIndex + 1)..];
@@ -311,6 +379,7 @@ namespace AsmConverter
                                             operandPartWorking[1..] is string operandPartTrimmed
                                             && Instructions.NasmRegisters.Contains(operandPartTrimmed))
                                         {
+                                            operandPartTrimmed = FixRegister(operandPartTrimmed);
                                             operandsList.Add(operandPartTrimmed);
                                         }else if(operandPartWorking.StartsWith("$")&&
                                             (operandPartWorking[1..] is string immediateNumberTrimmed))

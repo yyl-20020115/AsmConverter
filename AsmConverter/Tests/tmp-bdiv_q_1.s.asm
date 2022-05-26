@@ -26,14 +26,14 @@ __gmpn_bdiv_q_1:
 
 Lodd:
 	mov	rbx, rax
-	shr	eax
+	shr	eax, 1
 	and	eax, 127
 
-	
-	lea	rdx, [rip + __gmp_binvert_limb_table]
+	db 0x48,0x8d,0x15,0x00,0x00,0x00,0x00
 
-
-	movzb	eax, [rdx + rax]
+	;lea	__gmp_binvert_limb_table(%rip), %rdx
+	db 0x0f,0xb6,0x04,0x02
+	;movzbl	(%rdx,%rax), %eax	
 
 	mov	r11, rbx
 

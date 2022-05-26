@@ -1,7 +1,7 @@
 	.text
 	.align	16, 0x90
 	.globl	__gmpn_preinv_divrem_1
-	
+	.extern __gmpn_invert_limb
 	.def	__gmpn_preinv_divrem_1
 	.scl	2
 	.type	32

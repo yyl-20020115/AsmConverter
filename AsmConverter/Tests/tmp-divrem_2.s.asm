@@ -1,7 +1,7 @@
 [Bits 64]
 	align 16, db 0x90
 	global __gmpn_divrem_2
-	
+	extern __gmpn_invert_limb
 	;.def	__gmpn_divrem_2
 	;.scl	2
 	;.type	32
@@ -69,13 +69,13 @@ L2:
 	adc	rcx, -1
 	add	r9, rdx
 	adc	rcx, 0
-	js	2f
-1:
+	js	_2
+_1:
 	dec	rdi
 	sub	r9, r11
 	sbb	rcx, 0
-	jns	1b
-2:
+	jns	_1
+_2:
 
 	lea	rbp, [rbp + r14 * 8]
 	mov	rsi, r11

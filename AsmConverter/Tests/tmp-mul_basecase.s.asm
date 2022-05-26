@@ -136,7 +136,7 @@ xor	ebx, ebx
 	dec	r8
 	jz	Lret2
 	lea	rdi, [rdi - 8]
-	jmp	*%rbp
+	jmp	rbp
 
 Lm2:
 	mov	r11, [rcx + 8]

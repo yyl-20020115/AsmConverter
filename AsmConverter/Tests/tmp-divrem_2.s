@@ -1,7 +1,7 @@
 	.text
 	.align	16, 0x90
 	.globl	__gmpn_divrem_2
-	
+	.extern __gmpn_invert_limb
 	.def	__gmpn_divrem_2
 	.scl	2
 	.type	32
@@ -69,12 +69,12 @@ L2:
 	adc	$-1, %rcx
 	add	%rdx, %r9
 	adc	$0, %rcx
-	js	2f
-1:	dec	%rdi
+	js	_2
+_1:	dec	%rdi
 	sub	%r11, %r9
 	sbb	$0, %rcx
-	jns	1b
-2:
+	jns	_1
+_2:
 
 	lea	(%rbp,%r14,8), %rbp
 	mov	%r11, %rsi

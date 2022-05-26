@@ -25,14 +25,14 @@ __gmpn_bdiv_q_1:
 	jnc	Levn			
 
 Lodd:	mov	%rax, %rbx
-	shr	%eax
+	shr	$1,%eax
 	and	$127, %eax		
 
-	
-	lea	__gmp_binvert_limb_table(%rip), %rdx
+	.byte 0x48,0x8d,0x15,0x00,0x00,0x00,0x00
 
-
-	movzbl	(%rdx,%rax), %eax	
+	;lea	__gmp_binvert_limb_table(%rip), %rdx
+	.byte 0x0f,0xb6,0x04,0x02
+	;movzbl	(%rdx,%rax), %eax	
 
 	mov	%rbx, %r11		
 

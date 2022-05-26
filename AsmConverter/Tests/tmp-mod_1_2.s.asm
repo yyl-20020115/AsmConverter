@@ -16,7 +16,7 @@ __gmpn_mod_1s_2p:
 	mov	rcx, r9
 
 	push	r14
-	test	%sil, 1
+	test	sil, 1
 	mov	r14, rdx
 	push	r13
 	mov	r13, rcx

@@ -74,20 +74,20 @@ Lend:
 	lea	r8, [rip + Ltab]
 	movsl	r10, [r8 + rsi * 4 + 36]
 	add	r8, r10
-	jmp	*%r8
+	jmp	r8
 
-				.section .rdata,"dr"
+		section .rdata
 	align 8, db 0x90
 Ltab:
-		.long	L0-Ltab
-		.long	L1-Ltab
-		.long	L2-Ltab
-		.long	L3-Ltab
-		.long	L4-Ltab
-		.long	L5-Ltab
-		.long	L6-Ltab
-		.long	L7-Ltab
-		.long	L8-Ltab
+	dd L0-Ltab
+	dd L1-Ltab
+	dd L2-Ltab
+	dd L3-Ltab
+	dd L4-Ltab
+	dd L5-Ltab
+	dd L6-Ltab
+	dd L7-Ltab
+	dd L8-Ltab
 	section .text
 
 L6:

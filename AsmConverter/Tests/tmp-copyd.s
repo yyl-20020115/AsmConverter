@@ -51,7 +51,7 @@ Lam:	sub	$8, %rdx
 	jnc	Latop
 
 	test	$4, %dl
-	jz	1f
+	jz	_1
 	movaps	-8(%rsi), %xmm0
 	movaps	-24(%rsi), %xmm1
 	lea	-32(%rsi), %rsi
@@ -59,19 +59,19 @@ Lam:	sub	$8, %rdx
 	movaps	%xmm1, -24(%rdi)
 	lea	-32(%rdi), %rdi
 
-1:	test	$2, %dl
-	jz	1f
+_1:	test	$2, %dl
+	jz	_2
 	movaps	-8(%rsi), %xmm0
 	lea	-16(%rsi), %rsi
 	movaps	%xmm0, -8(%rdi)
 	lea	-16(%rdi), %rdi
 
-1:	test	$1, %dl
-	jz	1f
+_2:	test	$1, %dl
+	jz	_3
 	mov	(%rsi), %r8
 	mov	%r8, (%rdi)
 
-1:	pop	%rsi
+_3:	pop	%rsi
 	pop	%rdi
 	ret
 
@@ -110,7 +110,7 @@ Lutop:sub	$16, %rdx
 	jnc	Lutop
 
 Luend:test	$8, %dl
-	jz	1f
+	jz	_4
 	movaps	-16(%rsi), %xmm1
 	.byte	0x66,0x0f,0x3a,0x0f,193,8
 	movaps	%xmm0, -8(%rdi)
@@ -126,8 +126,8 @@ Luend:test	$8, %dl
 	lea	-64(%rsi), %rsi
 	lea	-64(%rdi), %rdi
 
-1:	test	$4, %dl
-	jz	1f
+_4:	test	$4, %dl
+	jz	_5
 	movaps	-16(%rsi), %xmm1
 	.byte	0x66,0x0f,0x3a,0x0f,193,8
 	movaps	%xmm0, -8(%rdi)
@@ -137,20 +137,20 @@ Luend:test	$8, %dl
 	lea	-32(%rsi), %rsi
 	lea	-32(%rdi), %rdi
 
-1:	test	$2, %dl
-	jz	1f
+_5:	test	$2, %dl
+	jz	_6
 	movaps	-16(%rsi), %xmm1
 	.byte	0x66,0x0f,0x3a,0x0f,193,8
 	movaps	%xmm0, -8(%rdi)
 	lea	-16(%rsi), %rsi
 	lea	-16(%rdi), %rdi
 
-1:	test	$1, %dl
-	jz	1f
+_6:	test	$1, %dl
+	jz	_7
 	mov	(%rsi), %r8
 	mov	%r8, (%rdi)
 
-1:	pop	%rsi
+_7:	pop	%rsi
 	pop	%rdi
 	ret
 
@@ -175,18 +175,18 @@ Ltop:	mov	(%rsi), %r8
 
 
 Lend:	test	$1, %dl
-	jz	1f
+	jz	_8
 	mov	(%rsi), %r8
 	mov	%r8, (%rdi)
 	lea	-8(%rdi), %rdi
 	lea	-8(%rsi), %rsi
-1:	test	$2, %dl
-	jz	1f
+_8:	test	$2, %dl
+	jz	_9
 	mov	(%rsi), %r8
 	mov	-8(%rsi), %r9
 	mov	%r8, (%rdi)
 	mov	%r9, -8(%rdi)
-1:	pop	%rsi
+_9:	pop	%rsi
 	pop	%rdi
 	ret
 	

@@ -21,7 +21,7 @@ __gmpn_copyd:
 	cmp	rdx, 7
 	jbe	Lbc
 
-	test	%dil, 8
+	test	dil, 8
 	jnz	Lrp_aligned
 
 	mov	rax, [rsi]
@@ -31,7 +31,7 @@ __gmpn_copyd:
 	dec	rdx
 
 Lrp_aligned:
-	test	%sil, 8
+	test	sil, 8
 	jz	Luent
 
 	jmp	Lam
@@ -53,7 +53,7 @@ Lam:
 	jnc	Latop
 
 	test	dl, 4
-	jz	1f
+	jz	_1
 	movaps	xmm0, [rsi - 8]
 	movaps	xmm1, [rsi - 24]
 	lea	rsi, [rsi - 32]
@@ -61,21 +61,21 @@ Lam:
 	movaps	[rdi - 24], xmm1
 	lea	rdi, [rdi - 32]
 
-1:
+_1:
 	test	dl, 2
-	jz	1f
+	jz	_2
 	movaps	xmm0, [rsi - 8]
 	lea	rsi, [rsi - 16]
 	movaps	[rdi - 8], xmm0
 	lea	rdi, [rdi - 16]
 
-1:
+_2:
 	test	dl, 1
-	jz	1f
+	jz	_3
 	mov	r8, [rsi]
 	mov	[rdi], r8
 
-1:
+_3:
 	pop	rsi
 	pop	rdi
 	ret
@@ -89,28 +89,28 @@ sub	rdx, 16
 Lutop:
 sub	rdx, 16
 	movaps	xmm1, [rsi - 16]
-		.byte	0x66,0x0f,0x3a,0x0f,193,8
+	db 0x66,0x0f,0x3a,0x0f,193,8
 	movaps	[rdi - 8], xmm0
 	movaps	xmm2, [rsi - 32]
-		.byte	0x66,0x0f,0x3a,0x0f,202,8
+	db 0x66,0x0f,0x3a,0x0f,202,8
 	movaps	[rdi - 24], xmm1
 	movaps	xmm3, [rsi - 48]
-		.byte	0x66,0x0f,0x3a,0x0f,211,8
+	db 0x66,0x0f,0x3a,0x0f,211,8
 	movaps	[rdi - 40], xmm2
 	movaps	xmm0, [rsi - 64]
-		.byte	0x66,0x0f,0x3a,0x0f,216,8
+	db 0x66,0x0f,0x3a,0x0f,216,8
 	movaps	[rdi - 56], xmm3
 	movaps	xmm1, [rsi - 80]
-		.byte	0x66,0x0f,0x3a,0x0f,193,8
+	db 0x66,0x0f,0x3a,0x0f,193,8
 	movaps	[rdi - 72], xmm0
 	movaps	xmm2, [rsi - 96]
-		.byte	0x66,0x0f,0x3a,0x0f,202,8
+	db 0x66,0x0f,0x3a,0x0f,202,8
 	movaps	[rdi - 88], xmm1
 	movaps	xmm3, [rsi - 112]
-		.byte	0x66,0x0f,0x3a,0x0f,211,8
+	db 0x66,0x0f,0x3a,0x0f,211,8
 	movaps	[rdi - 104], xmm2
 	movaps	xmm0, [rsi - 128]
-		.byte	0x66,0x0f,0x3a,0x0f,216,8
+	db 0x66,0x0f,0x3a,0x0f,216,8
 	movaps	[rdi - 120], xmm3
 	lea	rsi, [rsi - 128]
 	lea	rdi, [rdi - 128]
@@ -118,50 +118,50 @@ sub	rdx, 16
 
 Luend:
 test	dl, 8
-	jz	1f
+	jz	_4
 	movaps	xmm1, [rsi - 16]
-		.byte	0x66,0x0f,0x3a,0x0f,193,8
+	db 0x66,0x0f,0x3a,0x0f,193,8
 	movaps	[rdi - 8], xmm0
 	movaps	xmm0, [rsi - 32]
-		.byte	0x66,0x0f,0x3a,0x0f,200,8
+	db 0x66,0x0f,0x3a,0x0f,200,8
 	movaps	[rdi - 24], xmm1
 	movaps	xmm1, [rsi - 48]
-		.byte	0x66,0x0f,0x3a,0x0f,193,8
+	db 0x66,0x0f,0x3a,0x0f,193,8
 	movaps	[rdi - 40], xmm0
 	movaps	xmm0, [rsi - 64]
-		.byte	0x66,0x0f,0x3a,0x0f,200,8
+	db 0x66,0x0f,0x3a,0x0f,200,8
 	movaps	[rdi - 56], xmm1
 	lea	rsi, [rsi - 64]
 	lea	rdi, [rdi - 64]
 
-1:
+_4:
 	test	dl, 4
-	jz	1f
+	jz	_5
 	movaps	xmm1, [rsi - 16]
-		.byte	0x66,0x0f,0x3a,0x0f,193,8
+	db 0x66,0x0f,0x3a,0x0f,193,8
 	movaps	[rdi - 8], xmm0
 	movaps	xmm0, [rsi - 32]
-		.byte	0x66,0x0f,0x3a,0x0f,200,8
+	db 0x66,0x0f,0x3a,0x0f,200,8
 	movaps	[rdi - 24], xmm1
 	lea	rsi, [rsi - 32]
 	lea	rdi, [rdi - 32]
 
-1:
+_5:
 	test	dl, 2
-	jz	1f
+	jz	_6
 	movaps	xmm1, [rsi - 16]
-		.byte	0x66,0x0f,0x3a,0x0f,193,8
+	db 0x66,0x0f,0x3a,0x0f,193,8
 	movaps	[rdi - 8], xmm0
 	lea	rsi, [rsi - 16]
 	lea	rdi, [rdi - 16]
 
-1:
+_6:
 	test	dl, 1
-	jz	1f
+	jz	_7
 	mov	r8, [rsi]
 	mov	[rdi], r8
 
-1:
+_7:
 	pop	rsi
 	pop	rdi
 	ret
@@ -190,19 +190,19 @@ Ltop:
 
 Lend:
 	test	dl, 1
-	jz	1f
+	jz	_8
 	mov	r8, [rsi]
 	mov	[rdi], r8
 	lea	rdi, [rdi - 8]
 	lea	rsi, [rsi - 8]
-1:
+_8:
 	test	dl, 2
-	jz	1f
+	jz	_9
 	mov	r8, [rsi]
 	mov	r9, [rsi - 8]
 	mov	[rdi], r8
 	mov	[rdi - 8], r9
-1:
+_9:
 	pop	rsi
 	pop	rdi
 	ret
