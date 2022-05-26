@@ -1,7 +1,7 @@
 [Bits 64]
 	align 32, db 0x90
 	global __gmpn_redc_1
-	
+	extern __gmpn_add_n
 	;.def	__gmpn_redc_1
 	;.scl	2
 	;.type	32

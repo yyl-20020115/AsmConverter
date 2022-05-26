@@ -18,7 +18,7 @@ __gmpn_sqr_diag_addlsh1:
 	push	rbx
 
 	dec	rcx
-	shl	rcx
+	shl	rcx, 1
 
 	mov	rax, [rdx]
 

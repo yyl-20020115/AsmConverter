@@ -752,7 +752,7 @@ pop	r8
 
 Lsqr_diag_addlsh1:
 	mov	rax, [rsi + r8 * 8 - 8]
-	shl	r8
+	shl	r8, 1
 	xor	ebx, ebx
 	mul	rax
 	mov	r11, [rdi + r8 * 8 + 8]

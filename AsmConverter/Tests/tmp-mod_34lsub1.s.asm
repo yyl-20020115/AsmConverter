@@ -71,8 +71,9 @@ Ltop:
 	jnc	Ltop
 
 Lend:
-	lea	r8, [rip + Ltab]
-	movsl	r10, dword [r8 + rsi * 4 + 36]
+	;lea	Ltab(%rip), %r8
+	db 0x4c,0x8d,0x05,0x00,0x00,0x00,0x00
+	movsx	r10, dword [r8 + rsi * 4 + 36]
 	add	r8, r10
 	jmp	r8
 

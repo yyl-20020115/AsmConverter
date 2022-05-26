@@ -298,7 +298,7 @@ namespace AsmConverter
                         }
                         var orginstr = instr;
                         var instrLower = instr.ToLower();
-                        var operandSize = OperandSize.Byte;
+                        var operandSize = OperandSize.Unknown;
 
                         if (instrLower == "ljmp"|| instrLower == "lcall" || instrLower=="lret")
                         {
@@ -314,7 +314,6 @@ namespace AsmConverter
                                 operands = operands[1..];
                             }
                         }
-
                         if (instrLower.EndsWith('b')|| instrLower.EndsWith('w')|| instrLower.EndsWith('l')|| instrLower.EndsWith('q'))
                         {
                             if (Instructions.NasmInstructionNames.Contains(instrLower[..^1]))
@@ -339,7 +338,6 @@ namespace AsmConverter
                             //opm = base, index, scale
                             var ptr = "";
                             char ec = ' ';
-              
                             if (instrLower.Length == 5 && 
                                 (instrLower.StartsWith("movz")|| instrLower.StartsWith("movs"))
                                 &&
@@ -348,6 +346,10 @@ namespace AsmConverter
                                 ec = instrLower[^1];
                             }else if (orginstr.Length == 4 &&
                                 (instrLower.StartsWith("mul") || instrLower.StartsWith("div")))
+                            {
+                                //ok
+                            }
+                            if(ec ==' '&& operandSize!= OperandSize.Unknown)
                             {
                                 //this is a patch
                                 switch (operandSize)
@@ -367,7 +369,6 @@ namespace AsmConverter
                                 }
                             }
 
-
                             switch (ec)
                             {
                                 case 'b':
@@ -385,7 +386,7 @@ namespace AsmConverter
                             }
                             if (ptr.Length > 0)
                             {
-                                if (instrLower.StartsWith("movz"))
+                                if (instrLower.StartsWith("movz")|| instrLower.StartsWith("movs"))
                                     instr = instr[..^1] + "x";
                             }
 
@@ -487,7 +488,14 @@ namespace AsmConverter
                                 }
 
                             }
-
+                            instrLower = instr.ToLower();
+                            if(instrLower == "movsx" || instrLower == "movzx")
+                            {
+                                if(operandsTransformed.Count == 0)
+                                {
+                                    instr = instr[..^1];
+                                }
+                            }
                             if (far)
                             {
                                 if(operandsTransformed.Count == 1)
@@ -505,7 +513,7 @@ namespace AsmConverter
                                 line = instr;
                                 if (operandsTransformed.Count > 0)
                                 {
-                                    if(instrLower=="shr" && operandsTransformed.Count == 1)
+                                    if((instrLower=="shr"||instrLower=="shl")&& operandsTransformed.Count == 1)
                                     {
                                         //fix the shr reg,1 issues
                                         operandsTransformed.Add("1");

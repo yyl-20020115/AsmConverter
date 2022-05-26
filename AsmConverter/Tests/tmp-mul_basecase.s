@@ -48,8 +48,9 @@ Lm1s0:
 	lea	(%r9), %r13
 	mov	%rax, (%rdi,%r9,8)
 	mov	8(%rsi,%r9,8), %rax
-	mov	%rdx, %rbx		
-	lea	Ldo_am0(%rip), %rbp
+	mov	%rdx, %rbx	
+	;lea	Ldo_am0(%rip), %rbp
+	.byte 0x48,0x8d,0x2d,0x58,0x02,0x00,0x00
 	jmp	Lm1e0
 
 Lm1s2:
@@ -58,7 +59,8 @@ Lm1s2:
 	mov	8(%rsi,%r9,8), %rax
 	mov	%rdx, %rbx		
 	mul	%r10
-	lea	Ldo_am2(%rip), %rbp
+	;lea	Ldo_am2(%rip), %rbp
+	.byte 0x48,0x8d,0x2d,0xa9,0x06,0x00,0x00
 	test	%r13, %r13
 	jnz	Lm1e2
 	add	%rax, %rbx
@@ -76,8 +78,9 @@ Lm1s1:
 	test	%r13, %r13
 	jz	L1
 	mov	8(%rsi,%r9,8), %rax
-	mov	%rdx, %rcx		
-	lea	Ldo_am1(%rip), %rbp
+	mov	%rdx, %rcx	
+	;lea	Ldo_am1(%rip), %rbp
+	.byte 0x48,0x8d,0x2d,0x2f,0x04,0x00,0x00
 	jmp	Lm1e1
 L1:	mov	%rdx, (%rdi)
 	jmp	Lret2
@@ -86,8 +89,9 @@ Lm1s3:
 	lea	-1(%r9), %r13
 	mov	%rax, (%rdi,%r9,8)
 	mov	8(%rsi,%r9,8), %rax
-	mov	%rdx, %rcx		
-	lea	Ldo_am3(%rip), %rbp
+	mov	%rdx, %rcx	
+	;lea	Ldo_am3(%rip), %rbp
+	.byte 0x48,0x8d,0x2d,0x8f,0x08,0x00,0x00
 	jmp	Lm1e3
 
 	.align	16, 0x90

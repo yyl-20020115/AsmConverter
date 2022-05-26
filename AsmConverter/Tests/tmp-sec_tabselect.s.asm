@@ -136,13 +136,13 @@ Ltp1:
 	movdqa	xmm0, xmm8
 	pcmpeqd	xmm0, xmm1
 	paddd	xmm1, xmm9
-	mov	xmm2, [rsi + 0]
+	mov	xmm2, qword [rsi + 0]
 	pand	xmm2, xmm0
 	por	xmm4, xmm2
 	lea	rsi, [rsi + rdx * 8]
 	add	r10, -1
 	jne	Ltp1
-	mov	[rdi + 0], xmm4
+	mov	qword [rdi + 0], xmm4
 
 Lb000:
 	movdqu	xmm6, [rsp]
