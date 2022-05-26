@@ -314,7 +314,10 @@ namespace AsmConverter
                         {
                             if (Instructions.NasmInstructionNames.Contains(instrLower[..^1]))
                             {
-                                instrLower = instrLower[..^1];
+                                if (!Instructions.NasmInstructionNames.Contains(instrLower))
+                                {
+                                    instrLower = instrLower[..^1];
+                                }
                                 operandSize = instrLower[^1] switch
                                 {
                                     'b' => OperandSize.Byte,
@@ -417,8 +420,33 @@ namespace AsmConverter
                                     if (operandsSplitted.Enclosed 
                                         || operandsSplitted.Parts.Count>1)
                                     {
+                                        var ptr = "";
+                                        if (instrLower.Length == 5 && instrLower.StartsWith("movz") && 
+                                            (instrLower.EndsWith('b')|| instrLower.EndsWith('w')|| instrLower.EndsWith('l')|| instrLower.EndsWith('q')))
+                                        {
+                                            char ec = instrLower[^1];
+                                            switch (ec)
+                                            {
+                                                case 'b':
+                                                    ptr = "byte ";
+                                                    break;
+                                                case 'w':
+                                                    ptr = "word ";
+                                                    break;
+                                                case 'l':
+                                                    ptr = "dword ";
+                                                    break;
+                                                case 'q':
+                                                    ptr = "qword ";
+                                                    break;
+                                            }
+                                            if (ptr.Length > 0)
+                                            {
+                                                instr = instr[..^1]+"x";
+                                            }
+                                        }
                                         operandTrimmed =
-                                           "[" + sectionRegister + operandTrimmeds + "]";
+                                           ptr + "[" + sectionRegister + operandTrimmeds + "]";
                                     }
                                     else
                                     {

@@ -14,10 +14,14 @@ __gmpn_invert_limb:
 
 	mov	%rdi, %rax		
 	shr	$55, %rax		
+	
+	.byte 0x4c,0x8d,0x05,0x00,0xfe,0xff,0xff
+	;lea	r8, [rip - 512+__gmpn_invert_limb_table]
+	.byte 0x41,0x0f,0xb7,0x0c,0x40
+	;movzw	ecx, [r8 + rax * 2]
 
-	lea	-512+__gmpn_invert_limb_table(%rip), %r8
-
-	movzwl	(%r8,%rax,2), %ecx	
+	;lea	-512+__gmpn_invert_limb_table(%rip), %r8
+	;movzwl	(%r8,%rax,2), %ecx	
 
 	
 	mov	%rdi, %rsi		
@@ -42,16 +46,16 @@ __gmpn_invert_limb:
 
 	
 	mov	%rdi, %rsi		
-	shr	%rsi			
+	shr	$1,%rsi			
 	sbb	%rax, %rax		
 	sub	%rax, %rsi		
 	imul	%rcx, %rsi		
 	and	%rcx, %rax		
-	shr	%rax			
+	shr	$1,%rax			
 	sub	%rsi, %rax		
 	mul	%rcx
 	sal	$31, %rcx
-	shr	%rdx
+	shr	$1,%rdx
 	add	%rdx, %rcx		
 
 	mov	%rdi, %rax

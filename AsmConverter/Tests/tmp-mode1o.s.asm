@@ -48,7 +48,7 @@ Lent:
 	and	edx, 127
 	mov	r10, rcx
 
-	movzb	edx, [r9 + rdx]
+	movzx	edx, byte [r9 + rdx]
 
 	mov	rax, [rdi]
 	lea	r11, [rdi + rsi * 8]
