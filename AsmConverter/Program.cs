@@ -216,6 +216,10 @@ namespace AsmConverter
                         {
                             line = "db " + result[(".byte".Length + 1)..];
                         }
+                        else if (resultLower.StartsWith(".word"))
+                        {
+                            line = "dw " + result[(".word".Length + 1)..];
+                        }
                         else if (resultLower.StartsWith(".long"))
                         {
                             line = "dd " + result[(".long".Length + 1)..];

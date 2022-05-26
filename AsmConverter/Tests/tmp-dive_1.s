@@ -31,11 +31,8 @@ Lodd:	mov	%rax, %rbx
 	db 0x48,0x8d,0x15,0x00,0x00,0x00,0x00
 
 	;lea	__gmp_binvert_limb_table(%rip), %rdx
-	db 0x0f,0xb6,0x04,0x02
-	;movzbl	(%rdx,%rax), %eax	
 
-	;lea	__gmp_binvert_limb_table(%rip), %rdx
-	;movzbl	(%rdx,%rax), %eax	
+	movzbl	(%rdx,%rax), %eax	
 
 	mov	%rbx, %r11		
 
