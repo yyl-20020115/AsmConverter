@@ -2,7 +2,7 @@
   "profiles": {
     "AsmConverter": {
       "commandName": "Project",
-      "commandLineArgs": "-t ati Tests",
+      "commandLineArgs": "-t ati ATI_Tests",
       "workingDirectory": "$(ProjectDir)"
     }
   }
