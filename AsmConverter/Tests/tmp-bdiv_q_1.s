@@ -1,7 +1,7 @@
 	.text
 	.align	16, 0x90
 	.globl	__gmpn_bdiv_q_1
-	
+	.extern __gmp_binvert_limb_table
 	.def	__gmpn_bdiv_q_1
 	.scl	2
 	.type	32
@@ -28,9 +28,9 @@ Lodd:	mov	%rax, %rbx
 	shr	$1,%eax
 	and	$127, %eax		
 
-	.byte 0x48,0x8d,0x15,0x00,0x00,0x00,0x00
+	;.byte 0x48,0x8d,0x15,0x00,0x00,0x00,0x00
 
-	;lea	__gmp_binvert_limb_table(%rip), %rdx
+	lea	__gmp_binvert_limb_table(%rip), %rdx
 	
 	movzbl	(%rdx,%rax), %eax	
 

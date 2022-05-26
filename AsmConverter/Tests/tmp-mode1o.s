@@ -1,7 +1,7 @@
 	.text
 	.align	32, 0x90
 	.globl	__gmpn_modexact_1_odd
-	
+	.extern __gmp_binvert_limb_table
 	.def	__gmpn_modexact_1_odd
 	.scl	2
 	.type	32
@@ -41,8 +41,8 @@ Lent:
 	mov	%rdx, %r8		
 	shr	%edx		
 
-	.byte 0x4c,0x8d,0x0d,0x00,0x00,0x00,0x00 
-	;lea	__gmp_binvert_limb_table(%rip), %r9
+	;.byte 0x4c,0x8d,0x0d,0x00,0x00,0x00,0x00 
+	lea	__gmp_binvert_limb_table(%rip), %r9
 
 
 	and	$127, %edx

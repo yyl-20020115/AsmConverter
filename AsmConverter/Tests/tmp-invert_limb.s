@@ -1,7 +1,7 @@
 	.text
 	.align	16, 0x90
 	.globl	__gmpn_invert_limb
-	
+	.extern __gmpn_invert_limb_table	
 	.def	__gmpn_invert_limb
 	.scl	2
 	.type	32
@@ -15,10 +15,9 @@ __gmpn_invert_limb:
 	mov	%rdi, %rax		
 	shr	$55, %rax		
 	
-	.byte 0x4c,0x8d,0x05,0x00,0xfe,0xff,0xff
-	;lea	r8, [rip - 512+__gmpn_invert_limb_table]
+	;.byte 0x4c,0x8d,0x05,0x00,0xfe,0xff,0xff
 	
-	;lea	-512+__gmpn_invert_limb_table(%rip), %r8
+	lea	-512+__gmpn_invert_limb_table(%rip), %r8
 	movzwl	(%r8,%rax,2), %ecx	
 
 	

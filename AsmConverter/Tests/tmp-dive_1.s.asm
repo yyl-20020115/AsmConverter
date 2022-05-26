@@ -1,7 +1,7 @@
 [Bits 64]
 	align 16, db 0x90
 	global __gmpn_divexact_1
-	
+	extern __gmp_binvert_limb_table
 	;.def	__gmpn_divexact_1
 	;.scl	2
 	;.type	32
@@ -29,9 +29,9 @@ Lodd:
 	shr	eax, 1
 	and	eax, 127
 
-	db 0x48,0x8d,0x15,0x00,0x00,0x00,0x00
+	;.byte 0x48,0x8d,0x15,0x00,0x00,0x00,0x00
 
-	;lea	__gmp_binvert_limb_table(%rip), %rdx
+	lea	rdx, [rip + __gmp_binvert_limb_table]
 
 	movzx	eax, byte [rdx + rax]
 
