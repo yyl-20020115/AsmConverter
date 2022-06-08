@@ -618,15 +618,6 @@ namespace AsmConverter
         public int Offset = 0;
         public int Scale = 0;
         public int Size = 0;
-        public static readonly List<string> segments = new List<string> {
-                "cs",
-                "ss",
-                "ds",
-                "es",
-                "fs",
-                "gs"
-            };
-
         public COperand(List<CToken> tokens)
         {
             this.Mode = -1;
@@ -791,8 +782,8 @@ namespace AsmConverter
                 {
                     throw new Exception("memory operand segment bad");
                 }
-                var seg = t1.Value.ToString().ToLower();
-                if (!segments.Contains(seg))
+                var seg = t1.TextValue.ToLower();
+                if (!CIntelToATT.Segments.Contains(seg))
                 {
                     throw new Exception("memory operand segment unknow");
                 }
@@ -1052,22 +1043,6 @@ namespace AsmConverter
             }
             return 0;
         }
-        protected List<string> prefix = new () {
-                "lock",
-                "rep",
-                "repne",
-                "repnz",
-                "repe",
-                "repz"
-            };
-        protected List<string> segments = new () {
-                "cs",
-                "ss",
-                "ds",
-                "es",
-                "fs",
-                "gs"
-            };
 
         public virtual int ParsePrefix()
         {
@@ -1079,7 +1054,7 @@ namespace AsmConverter
                     break;
                 }
                 var text = t1.TextValue.ToLower();
-                if (!prefix.Contains(text) && !segments.Contains(text))
+                if (!CIntelToATT.Prefixes.Contains(text) && !CIntelToATT.Segments.Contains(text))
                 {
                     break;
                 }
@@ -1351,15 +1326,12 @@ namespace AsmConverter
                 var token = scanner.Next();
                 if (token == null)
                 {
-                    var text = string.Format("{0}: {1}", scanner.Row, scanner.Error);
-                    this.Error = text;
+                    this.Error = string.Format("{0}: {1}", scanner.Row, scanner.Error);
                     return -1;
                 }
                 tokens.Add(token);
                 if (token.Mode == CIntelToATT.CTOKEN_ENDF)
-                {
                     break;
-                }
             }
             while (tokens.Count > 0)
             {
@@ -1403,8 +1375,7 @@ namespace AsmConverter
                 }
                 catch (Exception e)
                 {
-                    var text = string.Format("{0}: {1}", lineno, e);
-                    this.Error = text;
+                    this.Error = string.Format("{0}: {1}", lineno, e);
                     return -1;
                 }
                 lineno += 1;
@@ -1936,6 +1907,22 @@ namespace AsmConverter
         public static readonly int[] StringChars = new int[] { '\n', '\'' };
         public static readonly int[] EndTokens = new int[] { CIntelToATT.CTOKEN_ENDF, CIntelToATT.CTOKEN_ENDL };
         public static readonly string[] HexHeaders = new string[] { "0x", "0X" };
+        public static readonly List<string> Prefixes = new() {
+                "lock",
+                "rep",
+                "repne",
+                "repnz",
+                "repe",
+                "repz"
+            };
+        public static readonly List<string> Segments = new() {
+                "cs",
+                "ss",
+                "ds",
+                "es",
+                "fs",
+                "gs"
+            };
         public static int RegInfo(string name)
         {
             name = name.ToLower();
@@ -2048,12 +2035,12 @@ namespace AsmConverter
                 var text = this.Synthesis.Synth(i, clabel, inline, align);
                 this.Lines.Add(text);
                 var memo = this.Synthesis.Memos[i].Trim(CIntelToATT.SpaceChars);
-                if (memo[..1] == ";")
+                if (memo.Length>0 && memo[0] == ';')
                 {
-                    memo = memo[1].ToString();
+                    memo = memo[..1];
                 }
                 memo = memo.Trim();
-                if (memo[..2] != "//" && memo != "")
+                if (memo.Length>1 && memo[..2] != "//" && memo != "")
                 {
                     memo = "//" + memo;
                 }
@@ -2094,7 +2081,7 @@ namespace AsmConverter
             for(int i = 0; i < this.Synthesis.Size; i++)
             {
                 var line = this.Lines[i];
-                if (line.Trim(new[] { '\r', '\t', '\n', ' ' }) == "")
+                if (line.Trim(SpaceChars) == "")
                 {
                     if (this.Memos[i] == "" || !memo )
                     {
