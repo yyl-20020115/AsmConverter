@@ -1612,7 +1612,7 @@ namespace AsmConverter
                 indent = this.Labels.Count + 2;
             }
             indent = Convert.ToInt32((indent + 1) / 2 * 2);
-            source = source.PadLeft(indent);
+            source += new string(' ', indent);// source.PadRight(indent);
             // 没有指令
             if (encoding.Empty)
                 return source;
@@ -1620,7 +1620,7 @@ namespace AsmConverter
             if (align)
             {
                 indent = Convert.ToInt32((this.Indent2 + 3) / 4 * 4);
-                instruction = instruction.PadLeft(indent);
+                instruction = instruction.PadRight(indent);
             }
             source += instruction + " ";
             if (encoding.Instruction.ToLower() == "align")
@@ -2124,7 +2124,7 @@ namespace AsmConverter
                     }
                     if (!string.IsNullOrEmpty(this.Memos[i]) && (memo))
                     {
-                        line = line.PadLeft(this.Maxsize)+ this.Memos[i];
+                        line = line.PadRight(this.Maxsize)+ this.Memos[i];
                     }
                     this.Output.Add(prefix + line);
                 }
