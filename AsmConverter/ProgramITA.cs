@@ -80,7 +80,11 @@ namespace AsmConverter
         public int UN = -1;
         public int Col = 1;
         public int Row = 1;
-        public int Eofs = 0;
+        protected int eofs = 0;
+        public int EofCount { 
+            get=>this.eofs; 
+            set=>this.eofs=value; 
+        }
         public int State = 0;
         public string Text = "";
         public string Error { 
@@ -90,7 +94,7 @@ namespace AsmConverter
         protected string err = "";
         public bool Inited = false;
         public int Code = 0;
-        public TextReader Reader = null;
+        public TextReader Reader;
         public List<CToken> Tokens = new();
         public CTokenizer(TextReader Reader)
         {
@@ -103,7 +107,7 @@ namespace AsmConverter
             this.UN = -1;
             this.Col = 0;
             this.Row = 1;
-            this.Eofs = 0;
+            this.EofCount = 0;
             this.State = 0;
             this.Text = "";
             this.Inited = false;
@@ -143,6 +147,7 @@ namespace AsmConverter
         public virtual void Ungetch(int ch) => this.UN = ch;
         public virtual bool IsSpace(char ch) => CIntelToATT.Spaces.Contains(ch);
         public virtual bool IsLetterOrDigit(char ch) => char.IsLetterOrDigit(ch);
+        public virtual bool IsLetter(char ch) => char.IsLetter(ch);
         public virtual bool IsDigit(char ch) => char.IsDigit(ch);
         public virtual int SkipSpaces()
         {
@@ -178,10 +183,6 @@ namespace AsmConverter
             if (token != null)
             {
                 this.Tokens.Add(token);
-            }
-            else
-            {
-
             }
             return token;
         }
@@ -523,8 +524,8 @@ namespace AsmConverter
             }
             if (this.CH == -1)
             {
-                this.Eofs += 1;
-                if (this.Eofs > 1) return token;
+                this.eofs ++;
+                //if (this.eofs > 1) return token;
                 token = new (CIntelToATT.CTOKEN_ENDF, 0);
                 token.Row = this.Row;
                 if (comment.Length > 0)
@@ -547,7 +548,7 @@ namespace AsmConverter
                 return token;
             }
             // identity or keyword
-            if (this.IsLetterOrDigit((char)this.CH)|| CIntelToATT.StartChars.Contains((char)this.CH))
+            if (this.IsLetter((char)this.CH)|| CIntelToATT.StartChars.Contains((char)this.CH))
             {
                 row = this.Row;
                 col = this.Col;
@@ -598,7 +599,8 @@ namespace AsmConverter
                 return token;
             }
             // this is an operator
-            token = new(CIntelToATT.CTOKEN_OPERATOR, this.CH, ((char)this.CH).ToString());
+            var t = ((char)this.CH).ToString();
+            token = new (CIntelToATT.CTOKEN_OPERATOR, t, t);
             token.Row = this.Row;
             token.Col = this.Col;
             this.GetCh();
@@ -655,7 +657,7 @@ namespace AsmConverter
                 {
                     break;
                 }
-                tokens.RemoveAt(0);
+                tokens.RemoveAt(tokens.Count-1);
             }
             this.Reset();
             if (tokens.Count >= 2)
@@ -750,7 +752,7 @@ namespace AsmConverter
         {
             CToken t1;
             CToken token;
-            tokens = tokens.ToArray()[1..-1].ToList();
+            tokens = tokens.ToArray()[1..^1].ToList();
             if (tokens.Count == 0)
             {
                 throw new Exception("memory operand error");
@@ -760,10 +762,10 @@ namespace AsmConverter
             this.Offset = 0;
             this._Base = "";
             var pos = -1;
-            foreach (var i in Enumerable.Range(0, tokens.Count))
+            for(int i = 0; i < tokens.Count; i++)
             {
                 token = tokens[i];
-                if (token.Mode == CIntelToATT.CTOKEN_OPERATOR && token.Value == ":")
+                if (token.Mode == CIntelToATT.CTOKEN_OPERATOR && token.TextValue == ":")
                 {
                     pos = i;
                     break;
@@ -1009,7 +1011,7 @@ namespace AsmConverter
                 {
                     break;
                 }
-                tokens.RemoveAt(0);
+                tokens.RemoveAt(tokens.Count-1);
             }
             if (tokens.Count == 0)
             {
@@ -1039,7 +1041,7 @@ namespace AsmConverter
                     throw new Exception("error label type");
                 }
                 this.Label = t1.TextValue;
-                this.Tokens = this.Tokens.ToArray()[..2].ToList();
+                this.Tokens = this.Tokens.ToArray()[..^2].ToList();
             }
             return 0;
         }
@@ -1097,7 +1099,14 @@ namespace AsmConverter
                     }
                 }
                 operands.Add(this.Tokens.ToArray()[..pos].ToList());
-                this.Tokens = this.Tokens.ToArray()[(pos + 1)..].ToList();
+                if(pos< size)
+                {
+                    this.Tokens = this.Tokens.ToArray()[(pos + 1)..].ToList();
+                }
+                else
+                {
+                    this.Tokens.Clear();
+                }
             }
             foreach (var token in operands)
             {
@@ -1226,7 +1235,15 @@ namespace AsmConverter
             var text = this.Operands[id].Translate(inline);
             return text;
         }
-
+        public virtual string TranslateOperands()
+        {
+            var ops = new List<string>();
+            for(int i = 0; i < this.Operands.Count; i++)
+            {
+                ops.Add(this.TranslateOperand(i));
+            }
+            return string.Join(',', ops);
+        }
         public override string ToString()
         {
             var text = "";
@@ -1240,7 +1257,7 @@ namespace AsmConverter
             }
             text += this.TranslateInstruction();
             text += " ";
-            text += this.TranslateOperand(0);
+            text += this.TranslateOperands();
             return text;
         }
     }

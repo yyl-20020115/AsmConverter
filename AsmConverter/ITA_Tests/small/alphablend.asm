@@ -1,3 +1,5 @@
+loop_pixel_x1:
+		prefetchnta [esi + 128];
 		mov edi, ptr1;
 		mov esi, ptr2;
 		pxor mm7, mm7;		// mm7 = 0000....00
@@ -96,7 +98,8 @@ end_line:
 		push word ptr w;
 		pop word ptr w;
 		jnz loop_line;
-nop: nop
+nop:
+		nop
 		db 1,2
 		mov byte ptr[edi], 0
 		mov word ptr[edi], 0
