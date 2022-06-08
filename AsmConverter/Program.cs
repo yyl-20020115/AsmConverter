@@ -91,7 +91,7 @@ namespace AsmConverter
             return (rets,enclosed);
         }
 
-        public static int Main(string[] args)
+        public static int Main2(string[] args)
         {
             var cd = ConvertDirection.Undefined;
             var target = ".";
