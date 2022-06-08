@@ -10,11 +10,14 @@ namespace AsmConverter
             using var OutputWriter = new StreamWriter(fo.FullName);
 
             var ita = new CIntelToATT();
-            ita.SetOptions(true, true, true, true);
-            ita.Parse(InputReader);
-            foreach(var line in ita.Output)
+            ita.SetOptions(true, false, true, true);
+            var (output, result) = ita.Convert(InputReader);
+            if(result == 0)
             {
-                OutputWriter.WriteLine(line);
+                foreach (var line in output)
+                {
+                    OutputWriter.WriteLine(line);
+                }
             }
         }
     }
@@ -29,7 +32,7 @@ namespace AsmConverter
         public string Text;
         public string Fd;
         public object Value;
-
+        public string TextValue => this.Value is string s ? s:string.Empty;
         public CToken(
             int mode = 0,
             object value = null,
@@ -83,9 +86,8 @@ namespace AsmConverter
         public string Error = "";
         public bool Inited = false;
         public int Code = 0;
-        public TextReader Reader;
-        public List<CToken> tokens = new();
-
+        public TextReader Reader = null;
+        public List<CToken> Tokens = new();
         public CTokenizer(TextReader Reader)
         {
             this.Reader = Reader;
@@ -103,7 +105,7 @@ namespace AsmConverter
             this.Inited = false;
             this.Error = "";
             this.Code = 0;
-            this.tokens = new ();
+            this.Tokens = new ();
         }
         public virtual int GetCh()
         {
@@ -144,7 +146,7 @@ namespace AsmConverter
             while (true)
             {
                 if (this.CH == -1)
-                {
+                { 
                     return -1;
                 }
                 if (!CIntelToATT.Spaces.Contains(this.CH))
@@ -160,7 +162,7 @@ namespace AsmConverter
             }
             return skip;
         }
-        public virtual CToken Read() => new();
+        public virtual CToken Read() => null;
         public virtual CToken Next()
         {
             if (!this.Inited)
@@ -171,7 +173,7 @@ namespace AsmConverter
             var token = this.Read();
             if (token != null)
             {
-                this.tokens.Add(token);
+                this.Tokens.Add(token);
             }
             return token;
         }
@@ -191,10 +193,7 @@ namespace AsmConverter
                     break;
                 }
                 result.Add(token);
-                if (token.Mode == CIntelToATT.CTOKEN_ENDF)
-                {
-                    break;
-                }
+                if (token.Mode == CIntelToATT.CTOKEN_ENDF) break;
             }
             return result;
         }
@@ -212,14 +211,12 @@ namespace AsmConverter
             this.CaseSensitive = casesensitive;
             this.CH = -1;
         }
-
         public virtual string SkipComments()
         {
             var memo = new StringBuilder();
             while (true)
             {
-                var skip = 0;
-                this.SkipSpaces();
+                var skip = this.SkipSpaces();
                 if (this.CH == -1)
                 {
                     break;
@@ -261,15 +258,12 @@ namespace AsmConverter
             }
             return memo.ToString();
         }
-
         public virtual CToken ReadString()
         {
-            CToken token = null;
             this.Error = "";
-            if (!CIntelToATT.QuoteChars.Contains(this.CH))
-            {
-                return token;
-            }
+            if (!CIntelToATT.QuoteChars.Contains(this.CH)) return null;
+
+            CToken token = null;
             var mode = this.CH == '\'' ? 0 : 1;
             var text = "";
             while (true)
@@ -297,7 +291,7 @@ namespace AsmConverter
                     }
                     else
                     {
-                        token = new CToken(CIntelToATT.CTOKEN_STR, text, text);
+                        token = new(CIntelToATT.CTOKEN_STR, text, text);
                         this.Text = text;
                         break;
                     }
@@ -311,7 +305,7 @@ namespace AsmConverter
                     }
                     else
                     {
-                        token = new CToken(CIntelToATT.CTOKEN_STR, text, text);
+                        token = new(CIntelToATT.CTOKEN_STR, text, text);
                         this.Text = text;
                         break;
                     }
@@ -333,24 +327,16 @@ namespace AsmConverter
                     break;
                 }
             }
-            if (token == null)
-            {
-                return token;
-            }
+            if (token == null) return null;
             token.Row = this.Row;
             token.Col = this.Col;
             return token;
         }
-
         public virtual CToken ReadNumber()
         {
             object value = 0;
+            if (this.CH < '0' || this.CH > '9') return null;
             CToken token = null;
-            var done = -1;
-            if (this.CH < '0' || this.CH > '9')
-            {
-                return token;
-            }
             var text = "";
             while (this.IsNumber((char)this.CH) || this.CH == '.')
             {
@@ -415,7 +401,7 @@ namespace AsmConverter
                 {
                     value = Convert.ToInt64(value);
                 }
-                token = new CToken(CIntelToATT.CTOKEN_INT, value, text);
+                token = new(CIntelToATT.CTOKEN_INT, value, text);
             }
             else if (ec1 == 'h' && ec2 == 0)
             {
@@ -433,7 +419,7 @@ namespace AsmConverter
                 {
                     value = Convert.ToInt64(value);
                 }
-                token = new CToken(CIntelToATT.CTOKEN_INT, value, text);
+                token = new(CIntelToATT.CTOKEN_INT, value, text);
             }
             else if (ec1 == 'b' && ec2 == 0)
             {
@@ -451,7 +437,7 @@ namespace AsmConverter
                 {
                     value = Convert.ToInt64(value);
                 }
-                token = new CToken(CIntelToATT.CTOKEN_INT, value, text);
+                token = new(CIntelToATT.CTOKEN_INT, value, text);
             }
             else if (ec1 == 'q' && ec2 == 0)
             {
@@ -469,7 +455,7 @@ namespace AsmConverter
                 {
                     value = Convert.ToInt64(value);
                 }
-                token = new CToken(CIntelToATT.CTOKEN_INT, value, text);
+                token = new(CIntelToATT.CTOKEN_INT, value, text);
             }
             else
             {
@@ -490,7 +476,7 @@ namespace AsmConverter
                     {
                         value = Convert.ToInt64(value);
                     }
-                    token = new CToken(CIntelToATT.CTOKEN_INT, value, text);
+                    token = new(CIntelToATT.CTOKEN_INT, value, text);
                 }
                 else
                 {
@@ -504,24 +490,23 @@ namespace AsmConverter
                         this.Code = 7;
                         return null;
                     }
-                    token = new CToken(CIntelToATT.CTOKEN_FLOAT, value, text);
+                    token = new(CIntelToATT.CTOKEN_FLOAT, value, text);
                 }
             }
             token.Row = this.Row;
             token.Col = this.Col;
             return token;
         }
-
-        public virtual CToken Read()
+        public override CToken Read()
         {
-            int col;
-            int row;
+            int col = 0;
+            int row = 0;
             CToken token = null;
             var comment = this.SkipComments();
             if (this.CH == '\n')
             {
                 var lineno = this.Row - 1;
-                token = new CToken(CIntelToATT.CTOKEN_ENDL);
+                token = new (CIntelToATT.CTOKEN_ENDL);
                 token.Row = lineno;
                 this.Comments[lineno] = comment;
                 comment = "";
@@ -531,11 +516,8 @@ namespace AsmConverter
             if (this.CH == -1)
             {
                 this.Eofs += 1;
-                if (this.Eofs > 1)
-                {
-                    return null;
-                }
-                token = new CToken(CIntelToATT.CTOKEN_ENDF, 0);
+                if (this.Eofs > 1) return token;
+                token = new (CIntelToATT.CTOKEN_ENDF, 0);
                 token.Row = this.Row;
                 if (comment.Length > 0)
                 {
@@ -544,37 +526,32 @@ namespace AsmConverter
                 return token;
             }
             // this is a string
-            if (new int[] { '\n', '\'' }.Contains(this.CH))
+            if (CIntelToATT.StringChars.Contains(this.CH))
             {
                 row = this.Row;
                 col = this.Col;
                 this.Code = 0;
                 this.Error = "";
                 token = this.ReadString();
-                if (this.Code != 0)
-                {
-                    return null;
-                }
+                if (this.Code != 0) return null;
                 token.Row = row;
                 token.Col = col;
                 return token;
             }
-            var issym2f = (char x) => this.IsAlpha(x) || CIntelToATT.StartChars.Contains(x);
-            var issym2x = (char x) => this.IsNumber(x) || CIntelToATT.StartChars.Contains(x);
             // identity or keyword
-            if (issym2f((char)this.CH))
+            if (this.IsAlpha((char)this.CH)|| CIntelToATT.StartChars.Contains((char)this.CH))
             {
                 row = this.Row;
                 col = this.Col;
                 var text = "";
-                while (issym2x((char)this.CH))
+                while (this.IsNumber((char)this.CH) || CIntelToATT.StartChars.Contains((char)this.CH))
                 {
                     text += (char)this.CH;
                     this.GetCh();
                 }
                 if (this.Keywords.Count > 0)
                 {
-                    foreach (var i in Enumerable.Range(0, this.Keywords.Count))
+                    for(int i = 0;i< this.Keywords.Count;i++)
                     {
                         var same = false;
                         if (this.CaseSensitive)
@@ -587,14 +564,14 @@ namespace AsmConverter
                         }
                         if (same)
                         {
-                            token = new CToken(CIntelToATT.CTOKEN_KEYWORD, i, text);
+                            token = new(CIntelToATT.CTOKEN_KEYWORD, i, text);
                             token.Row = row;
                             token.Col = col;
                             return token;
                         }
                     }
                 }
-                token = new CToken(CIntelToATT.CTOKEN_IDENT, text, text);
+                token = new(CIntelToATT.CTOKEN_IDENT, text, text);
                 token.Row = row;
                 token.Col = col;
                 return token;
@@ -607,16 +584,13 @@ namespace AsmConverter
                 this.Code = 0;
                 this.Error = "";
                 token = this.ReadNumber();
-                if (this.Code != 0)
-                {
-                    return null;
-                }
+                if (this.Code != 0) return null;
                 token.Row = row;
                 token.Col = col;
                 return token;
             }
             // this is an operator
-            token = new CToken(CIntelToATT.CTOKEN_OPERATOR, this.CH, this.CH.ToString());
+            token = new(CIntelToATT.CTOKEN_OPERATOR, this.CH, ((char)this.CH).ToString());
             token.Row = this.Row;
             token.Col = this.Col;
             this.GetCh();
@@ -625,17 +599,25 @@ namespace AsmConverter
     }
     public class COperand
     {
-        public string _Base;
-        public long Immediate;
-        public string Index;
-        public string Label;
-        public int Mode;
-        public string Name;
-        public int Offset;
-        public string Reg;
-        public int Scale;
-        public string Segment;
-        public int Size;
+        public string _Base = "";
+        public long Immediate = 0;
+        public string Index = "";
+        public string Label = "";
+        public string Name = "";
+        public string Reg = "";
+        public string Segment = "";
+        public int Mode = 0;
+        public int Offset = 0;
+        public int Scale = 0;
+        public int Size = 0;
+        public static readonly List<string> segments = new List<string> {
+                "cs",
+                "ss",
+                "ds",
+                "es",
+                "fs",
+                "gs"
+            };
 
         public COperand(List<CToken> tokens)
         {
@@ -670,7 +652,7 @@ namespace AsmConverter
         {
             while (tokens.Count > 0)
             {
-                if (!new int[] { CIntelToATT.CTOKEN_ENDF, CIntelToATT.CTOKEN_ENDL }.Contains(tokens.Last().Mode))
+                if (!CIntelToATT.EndTokens.Contains(tokens.Last().Mode))
                 {
                     break;
                 }
@@ -681,11 +663,11 @@ namespace AsmConverter
             {
                 var t1 = tokens[0];
                 var t2 = tokens[1];
-                if (t2.Mode == CIntelToATT.CTOKEN_IDENT && t2.Value.ToString().ToLower() == "ptr")
+                if (t2.Mode == CIntelToATT.CTOKEN_IDENT && (t2.TextValue).ToLower() == "ptr")
                 {
                     if (t1.Mode == CIntelToATT.CTOKEN_IDENT)
                     {
-                        var size = t1.Value.ToString().ToLower();
+                        var size = t1.TextValue.ToLower();
                         if (size == "byte")
                         {
                             this.Size = 1;
@@ -714,7 +696,7 @@ namespace AsmConverter
                 throw new Exception("expected operand token");
             }
             var head = tokens[0];
-            var tail = tokens[-1];
+            var tail = tokens[^1];
             if (head.Mode == CIntelToATT.CTOKEN_INT)
             {
                 // 如果是立即数
@@ -727,7 +709,7 @@ namespace AsmConverter
             else if (head.Mode == CIntelToATT.CTOKEN_IDENT)
             {
                 // 寄存器或标识
-                if (CIntelToATT.IsReg(head.Value.ToString()))
+                if (CIntelToATT.IsReg(head.TextValue))
                 {
                     // 如果是寄存器
                     this.Mode = CIntelToATT.O_REG;
@@ -737,17 +719,17 @@ namespace AsmConverter
                 else
                 {
                     this.Mode = CIntelToATT.O_LABEL;
-                    this.Label = head.Value as string;
+                    this.Label = head.TextValue;
                 }
             }
             else if (head.Mode == CIntelToATT.CTOKEN_OPERATOR)
             {
                 // 如果是符号
-                if (head.Value as string == "[")
+                if (head.TextValue == "[")
                 {
                     // 如果是内存
                     this.Mode = CIntelToATT.O_MEM;
-                    if (tail.Mode != CIntelToATT.CTOKEN_OPERATOR || tail.Value as string != "]")
+                    if (tail.Mode != CIntelToATT.CTOKEN_OPERATOR || tail.TextValue != "]")
                     {
                         throw new Exception("bad memory operand");
                     }
@@ -778,14 +760,6 @@ namespace AsmConverter
             this.Index = "";
             this.Offset = 0;
             this._Base = "";
-            var segments = new List<string> {
-                "cs",
-                "ss",
-                "ds",
-                "es",
-                "fs",
-                "gs"
-            };
             var pos = -1;
             foreach (var i in Enumerable.Range(0, tokens.Count))
             {
@@ -817,10 +791,10 @@ namespace AsmConverter
                 this.Segment = seg;
             }
             pos = -1;
-            foreach (var i in Enumerable.Range(0, tokens.Count))
+            for(int i = 0;i<tokens.Count;i++)
             {
                 token = tokens[i];
-                if (token.Mode == CIntelToATT.CTOKEN_OPERATOR && token.Value == "*")
+                if (token.Mode == CIntelToATT.CTOKEN_OPERATOR && token.TextValue == "*")
                 {
                     pos = i;
                     break;
@@ -848,11 +822,11 @@ namespace AsmConverter
                 {
                     throw new Exception("memory operand error (scale error)");
                 }
-                if (!CIntelToATT.IsReg(t1.Value.ToString()))
+                if (!CIntelToATT.IsReg(t1.TextValue))
                 {
                     throw new Exception("memory operand error (no index register)");
                 }
-                this.Index = t1.Value.ToString();
+                this.Index = t1.TextValue;
                 this.Scale = (int)(long)t2.Value;
                 if (!CIntelToATT.ValidScales.Contains(this.Scale))
                 {
@@ -863,15 +837,15 @@ namespace AsmConverter
             //print ''
             foreach (var token_ in tokens)
             {
-                if (token_.Mode == CIntelToATT.CTOKEN_IDENT && CIntelToATT.IsReg(token_.Value as string))
+                if (token_.Mode == CIntelToATT.CTOKEN_IDENT && CIntelToATT.IsReg(token_.TextValue))
                 {
                     if (this._Base == "")
                     {
-                        this._Base = token_.Value as string;
+                        this._Base = token_.TextValue;
                     }
                     else if (this.Index == "")
                     {
-                        this.Index = token_.Value as string;
+                        this.Index = token_.TextValue;
                     }
                     else
                     {
@@ -890,7 +864,7 @@ namespace AsmConverter
                         throw new Exception("memory operand error (too many offs)");
                     }
                 }
-                else if (token_.Mode == CIntelToATT.CTOKEN_OPERATOR && token_.Value == "+")
+                else if (token_.Mode == CIntelToATT.CTOKEN_OPERATOR && token_.TextValue == "+")
                 {
                 }
                 else
@@ -1000,23 +974,14 @@ namespace AsmConverter
     }
     public class CEncoding
     {
-
         public bool Empty;
-
         public string Instruction;
-
         public string Label;
-
         public string Name;
-
         public List<COperand> Operands;
-
         public string Prefix;
-
         public int Size;
-
         public List<CToken> Tokens;
-
         public string Inst;
 
         public CEncoding(List<CToken> tokens)
@@ -1041,7 +1006,7 @@ namespace AsmConverter
         {
             while (tokens.Count > 0)
             {
-                if (!new int[] { CIntelToATT.CTOKEN_ENDF, CIntelToATT.CTOKEN_ENDL }.Contains(tokens.Last().Mode))
+                if (!CIntelToATT.EndTokens.Contains(tokens.Last().Mode))
                 {
                     break;
                 }
@@ -1059,33 +1024,27 @@ namespace AsmConverter
             this.ParseInstruction();
             this.ParseOperands();
             this.Update();
-            this.Tokens = null;
+            this.Tokens = new();
             return 0;
         }
 
         public virtual int ParseLabel()
         {
-            if (this.Tokens.Count < 2)
-            {
-                return 0;
-            }
+            if (this.Tokens.Count < 2) return 0;
             var t1 = Tokens[Tokens.Count - 2];
             var t2 = Tokens[Tokens.Count - 1];
-            if (t2.Mode == CIntelToATT.CTOKEN_OPERATOR && t2.Value as string == ":")
+            if (t2.Mode == CIntelToATT.CTOKEN_OPERATOR && t2.TextValue == ":")
             {
                 if (t1.Mode != CIntelToATT.CTOKEN_IDENT)
                 {
                     throw new Exception("error label type");
                 }
-                this.Label = t1.Value as string;
+                this.Label = t1.TextValue;
                 this.Tokens = this.Tokens.ToArray()[..2].ToList();
             }
             return 0;
         }
-
-        public virtual object ParsePrefix()
-        {
-            var prefix = new List<string> {
+        protected List<string> prefix = new () {
                 "lock",
                 "rep",
                 "repne",
@@ -1093,7 +1052,7 @@ namespace AsmConverter
                 "repe",
                 "repz"
             };
-            var segments = new List<string> {
+        protected List<string> segments = new () {
                 "cs",
                 "ss",
                 "ds",
@@ -1101,6 +1060,9 @@ namespace AsmConverter
                 "fs",
                 "gs"
             };
+
+        public virtual int ParsePrefix()
+        {
             while (this.Tokens.Count >= 1)
             {
                 var t1 = this.Tokens[0];
@@ -1108,7 +1070,7 @@ namespace AsmConverter
                 {
                     break;
                 }
-                var text = t1.Value.ToString().ToLower();
+                var text = t1.TextValue.ToLower();
                 if (!prefix.Contains(text) && !segments.Contains(text))
                 {
                     break;
@@ -1122,39 +1084,36 @@ namespace AsmConverter
 
         public virtual int ParseInstruction()
         {
-            if (this.Tokens.Count < 1)
-            {
-                return 0;
-            }
+            if (this.Tokens.Count < 1) return 0;
             var t1 = this.Tokens[0];
             this.Tokens = this.Tokens.ToArray()[1..].ToList();
             if (t1.Mode != CIntelToATT.CTOKEN_IDENT)
             {
                 throw new Exception("instruction type error");
             }
-            this.Instruction = t1.Value as string;
+            this.Instruction = t1.TextValue;
             return 0;
         }
 
         public virtual int ParseOperands()
         {
-            var operands = new List<CToken>();
+            var operands = new List<List<CToken>>();
             while (this.Tokens.Count > 0)
             {
                 var size = this.Tokens.Count;
                 var pos = size;
-                foreach (var i in Enumerable.Range(0, size))
+                for(int i = 0; i < size; i++)
                 {
                     if (this.Tokens[i].Mode == CIntelToATT.CTOKEN_OPERATOR)
                     {
-                        if (this.Tokens[i].Value as string == ",")
+                        if (this.Tokens[i].TextValue == ",")
                         {
                             pos = i;
                             break;
                         }
                     }
                 }
-                operands.AddRange(this.Tokens.ToArray()[..pos]);
+                operands.Add(this.Tokens.ToArray()[..pos].ToList());
                 this.Tokens = this.Tokens.ToArray()[(pos + 1)..].ToList();
             }
             foreach (var token in operands)
@@ -1260,7 +1219,6 @@ namespace AsmConverter
 
         public virtual string TranslateOperand(int id, bool inline = false)
         {
-            var desc = new List<object>();
             if (this.Instruction.ToLower() == "align")
             {
                 var size = 4;
@@ -1336,26 +1294,19 @@ namespace AsmConverter
 
         public List<(string,int,int,int)> Table;
 
-        public List<object> Tokens;
-
         public List<(int, string, bool)> Variables;
 
         public Dictionary<string, List<(string, int, int, int)>> Vars;
 
-        public CSynthesis(TextReader source = null)
+        public CSynthesis()
         {
             this.Reset();
-            if (source != null)
-            {
-                this.Parse(source);
-            }
             this.Name = "csynthesis";
         }
 
         public virtual void Reset()
         {
             this.Source = "";
-            this.Tokens = new();
             this.Encodings = new();
             this.Labels = new();
             this.References = new();
@@ -1375,17 +1326,11 @@ namespace AsmConverter
         {
             this.Reset();
             if (this.DoTokenize(source) != 0)
-            {
                 return -1;
-            }
             if (this.DoEncoding() != 0)
-            {
                 return -2;
-            }
             if (this.DoAnalyse() != 0)
-            {
                 return -3;
-            }
             return 0;
         }
 
@@ -1423,12 +1368,12 @@ namespace AsmConverter
                 this.Lines.Add(tokens.ToArray()[..(pos + 1)].ToList());
                 tokens = tokens.ToArray()[(pos + 1)..].ToList();
             }
-            foreach (var i in Enumerable.Range(0, this.Lines.Count))
+            for(int i = 0; i < Lines.Count; i++)
             {
                 var lineno = i + 1;
                 if (scanner.Comments.ContainsKey(lineno))
                 {
-                    this.Memos[i] = scanner.Comments[lineno].Trim(new char[] { '\r', '\n', '\t', ' ' });
+                    this.Memos[i] = scanner.Comments[lineno].Trim(CIntelToATT.SpaceChars);
                 }
                 else
                 {
@@ -1446,7 +1391,7 @@ namespace AsmConverter
             {
                 try
                 {
-                    var encoding = new CEncoding(tokens);
+                    this.Encodings.Add(new (tokens));
                 }
                 catch (Exception e)
                 {
@@ -1454,7 +1399,6 @@ namespace AsmConverter
                     this.Error = text;
                     return -1;
                 }
-                this.Encodings.AddRange(Encodings);
                 lineno += 1;
             }
             if (this.Lines.Count != this.Encodings.Count)
@@ -1464,13 +1408,15 @@ namespace AsmConverter
             return 0;
         }
 
+        protected static readonly List<string> amd64 = new () 
+                { "rax", "rbx", "rcx", "rdx", "rdi", "rsi", "rbp", "rsp" };
+
         public virtual int DoAnalyse()
         {
             CEncoding encoding;
             this.Size = this.Lines.Count;
             var index = 0;
-            var amd64 = new List<string> { "rax", "rbx", "rcx", "rdx", "rdi", "rsi", "rbp", "rsp" };
-            foreach (var i in Enumerable.Range(0, this.Size))
+            for(int i = 0;i<this.Size;i++)
             {
                 encoding = this.Encodings[i];
                 if (encoding.Label != null)
@@ -1480,10 +1426,10 @@ namespace AsmConverter
                 }
             }
             var varlist = new List<(string, int, int)>();
-            foreach (var i in Enumerable.Range(0, this.Size))
+            for (int i = 0; i < this.Size; i++)
             {
                 encoding = this.Encodings[i];
-                foreach (var j in Enumerable.Range(0, encoding.Operands.Count))
+                for(int j = 0;j< encoding.Operands.Count;j++)
                 {
                     var operand = encoding.Operands[j];
                     if (operand.Mode == CIntelToATT.O_LABEL)
@@ -1517,27 +1463,21 @@ namespace AsmConverter
             foreach (var (var, line, pos) in varlist)
             {
                 if (pos == 0)
-                {
                     vartable.Add((var, line, pos));
-                }
             }
             foreach (var (var, line, pos) in varlist)
             {
                 if (pos != 0)
-                {
                     vartable.Add((var, line, pos));
-                }
             }
             var names = new Dictionary<string, int>();
 
-            foreach (var i in Enumerable.Range(0, vartable.Count))
+            for(int i = 0;i<vartable.Count;i++)
             {
-                List<(string, int, int, int)> desc = null;
-
                 var (var, line, pos) = vartable[i];
-                if (!this.Vars.TryGetValue(var, out desc))
+                if (!this.Vars.TryGetValue(var, out var desc))
                 {
-                    desc = new();
+                    this.Vars[var]= desc = new();                
                 }
 
                 if (desc.Count == 0)
@@ -1558,7 +1498,7 @@ namespace AsmConverter
             }
             var indent1 = 0;
             var indent2 = 0;
-            foreach (var i in Enumerable.Range(0, this.Size))
+            for (int i = 0; i < this.Size; i++)
             {
                 encoding = this.Encodings[i];
                 encoding.Inst = encoding.TranslateInstruction();
@@ -1615,7 +1555,7 @@ namespace AsmConverter
             var encoding = this.Encodings[lineno];
             if (encoding.Empty)
             {
-                return "";
+                return string.Empty;
             }
             var source = encoding.Prefix + " " + encoding.Inst;
             source = source.Trim();
@@ -1642,10 +1582,7 @@ namespace AsmConverter
             if (this.Labels.ContainsKey(label))
             {
                 // this is a jmp label
-                if (!clabel)
-                {
-                    return label;
-                }
+                if (!clabel) return label;
                 var (line, index) = this.Labels[label];
                 if (line <= lineno)
                 {
@@ -1682,9 +1619,7 @@ namespace AsmConverter
             source = source.PadLeft(indent);
             // 没有指令
             if (encoding.Empty)
-            {
                 return source;
-            }
             var instruction = this.GetInstruction(lineno);
             if (align)
             {
@@ -1699,16 +1634,14 @@ namespace AsmConverter
                 {
                     var operand = encoding.Operands[0];
                     if (operand.Mode == CIntelToATT.O_IMM)
-                    {
                         size = (int)operand.Immediate;
-                    }
                 }
                 source += string.Format("{0}, 0x90", size);
             }
             else if (new string[] { ".byte", ".int", ".short" }.Contains(encoding.Inst.ToLower()))
             {
                 operands = new List<string>();
-                foreach (var i in Enumerable.Range(0, encoding.Operands.Count))
+                for(int i = 0;i< encoding.Operands.Count;i++)
                 {
                     op = encoding.Operands[i];
                     var text = string.Format("0x{0:X}", (op.Immediate));
@@ -1719,7 +1652,7 @@ namespace AsmConverter
             else
             {
                 operands = new List<string>();
-                foreach (var i in Enumerable.Range(0, encoding.Operands.Count))
+                for(int i= 0;i<operands.Count;i++)
                 {
                     var opx = this.GetOperand(lineno, i, clabel, inline);
                     operands.Add(opx);
@@ -1749,33 +1682,22 @@ namespace AsmConverter
             return text;
         }
 
-        public virtual string GetRegs()
-        {
-            if (this.IsAMd64)
-            {
-                return "\"rsi\", \"rdi\", \"rax\", \"rbx\", \"rcx\", \"rdx\"";
-            }
-            return "\"esi\", \"edi\", \"eax\", \"ebx\", \"ecx\", \"edx\"";
-        }
+        public virtual string GetRegs() 
+            => this.IsAMd64 
+            ? "\"rsi\", \"rdi\", \"rax\", \"rbx\", \"rcx\", \"rdx\"" 
+            : "\"esi\", \"edi\", \"eax\", \"ebx\", \"ecx\", \"edx\""
+            ;
     }
     public class CIntelToATT
     {
         public const int CTOKEN_ENDL = 0;
-
         public const int CTOKEN_ENDF = 1;
-
         public const int CTOKEN_IDENT = 2;
-
         public const int CTOKEN_KEYWORD = 3;
-
         public const int CTOKEN_STR = 4;
-
         public const int CTOKEN_OPERATOR = 5;
-
         public const int CTOKEN_INT = 6;
-
         public const int CTOKEN_FLOAT = 7;
-
         public const int CTOKEN_ERROR = 8;
 
         public static Dictionary<int, string> CTOKEN_NAME = new() {
@@ -1923,9 +1845,7 @@ namespace AsmConverter
         static CIntelToATT()
         {
             foreach (var reg in REGNAMES)
-            {
                 REGSIZE[reg] = RegInfo(reg);
-            }
         }
         public static Func<string, int> RegSize = reg => REGSIZE[reg.ToUpper()];
 
@@ -1995,32 +1915,31 @@ namespace AsmConverter
         {
             "stosd",
             "stosl"}};
-
         public static int O_REG = 0;
-
         public static int O_IMM = 1;
-
         public static int O_MEM = 2;
-
         public static int O_LABEL = 3;
 
         public static readonly int[] Spaces = new[] { (int)' ', '\r', '\n', '\t' };
+        public static readonly char[] SpaceChars = new[] { ' ', '\r', '\n', '\t' };
         public static readonly int[] CommentChars = new int[] { (int)';', '#' };
         public static readonly int[] QuoteChars = new int[] { '\'', '\"' };
         public static readonly int[] StartChars = new int[] { '_', '$', '@' };
+        public static readonly int[] StringChars = new int[] { '\n', '\'' };
+        public static readonly int[] EndTokens = new int[] { CIntelToATT.CTOKEN_ENDF, CIntelToATT.CTOKEN_ENDL };
         public static readonly string[] HexHeaders = new string[] { "0x", "0X" };
         public static int RegInfo(string name)
         {
             name = name.ToLower();
-            if (name[..2] == "mm")
+            if (name.Length>=2 && name[..2] == "mm")
             {
                 return 8;
             }
-            if (name[..3] == "xmm")
+            if (name.Length >= 3 && name[..3] == "xmm")
             {
                 return 16;
             }
-            if (name[..1] == "r" && char.IsDigit(name[1]))
+            if (name.Length >= 1 && name[..1] == "r" && char.IsDigit(name[1]))
             {
                 return 8;
             }
@@ -2074,32 +1993,25 @@ namespace AsmConverter
             return result;
         }
 
-
         public Dictionary<string, bool> Config;
-
         public string Error;
-
         public List<string> Lines;
-
         public int Maxsize;
-
         public Dictionary<int, string> Memos;
-
         public List<string> Output;
-
         public CSynthesis Synthesis;
-
         public CIntelToATT()
         {
-            this.Synthesis = new CSynthesis();
+            this.Synthesis = new();
             this.Config = new();
             this.Config["align"] = false;
             this.Config["inline"] = false;
             this.Config["clabel"] = false;
             this.Config["memo"] = false;
             this.Error = "";
-            this.Lines = new List<string>();
-            this.Output = new List<string>();
+            this.Lines = new();
+            this.Output = new();
+            this.Memos = new();
             this.SetOptions();
         }
 
@@ -2112,10 +2024,10 @@ namespace AsmConverter
             return 0;
         }
 
-        public virtual int Parse(TextReader source, bool clabel =true, bool inline=true, bool align =true)
+        public virtual int Parse(TextReader source, bool clabel =true, bool inline=false, bool align =true)
         {
-            this.Lines = new List<string>();
-            this.Output = new List<string>();
+            this.Lines = new();
+            this.Output = new();
             this.Memos = new();
             var retval = this.Synthesis.Parse(source);
             this.Error = this.Synthesis.Error;
@@ -2123,16 +2035,16 @@ namespace AsmConverter
             {
                 return retval;
             }
-            foreach (var i in Enumerable.Range(0, this.Synthesis.Size))
+            for(int i = 0;i<this.Synthesis.Size;i++)
             {
                 var text = this.Synthesis.Synth(i, clabel, inline, align);
                 this.Lines.Add(text);
-                var memo = this.Synthesis.Memos[i].Trim(new char[] { '\r', '\n', '\t', ' ' });
+                var memo = this.Synthesis.Memos[i].Trim(CIntelToATT.SpaceChars);
                 if (memo[..1] == ";")
                 {
                     memo = memo[1].ToString();
                 }
-                memo = memo.Trim(new char[] { '\r', '\n', '\t', ' ' });
+                memo = memo.Trim();
                 if (memo[..2] != "//" && memo != "")
                 {
                     memo = "//" + memo;
@@ -2151,7 +2063,7 @@ namespace AsmConverter
             return 0;
         }
 
-        public virtual int intel2gas(TextReader source)
+        public virtual (List<string>, int) Convert(TextReader source)
         {
             this.Lines = new();
             this.Output = new();
@@ -2164,14 +2076,14 @@ namespace AsmConverter
             var prefix = "";
             if (retval != 0)
             {
-                return retval;
+                return (this.Output,retval);
             }
             if (inline)
             {
                 this.Output.Add("__asm__ __volatile__ (");
                 prefix = "  ";
             }
-            foreach (var i in Enumerable.Range(0, this.Synthesis.Size))
+            for(int i = 0; i < this.Synthesis.Size; i++)
             {
                 var line = this.Lines[i];
                 if (line.Trim(new[] { '\r', '\t', '\n', ' ' }) == "")
@@ -2200,7 +2112,7 @@ namespace AsmConverter
                     }
                     if (!string.IsNullOrEmpty(this.Memos[i]) && (memo))
                     {
-                        line = line.PadLeft(Convert.ToInt32(this.Maxsize)) + this.Memos[i];
+                        line = line.PadLeft(this.Maxsize)+ this.Memos[i];
                     }
                     this.Output.Add(prefix + line);
                 }
@@ -2212,7 +2124,7 @@ namespace AsmConverter
                 this.Output.Add("  :\"memory\", " + this.Synthesis.GetRegs());
                 this.Output.Add(");");
             }
-            return 0;
+            return (this.Output, 0);
         }
     }
 }
