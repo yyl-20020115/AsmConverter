@@ -1611,15 +1611,15 @@ namespace AsmConverter
             {
                 indent = this.Labels.Count + 2;
             }
-            indent = Convert.ToInt32((indent + 1) / 2 * 2);
-            source += new string(' ', indent);// source.PadRight(indent);
+            indent = ((indent + 1) / 2 * 2);
+            source += new string(' ', indent);
             // 没有指令
             if (encoding.Empty)
                 return source;
             var instruction = this.GetInstruction(lineno);
             if (align)
             {
-                indent = Convert.ToInt32((this.Indent2 + 3) / 4 * 4);
+                indent = ((this.Indent2 + 3) / 4 * 4);
                 instruction = instruction.PadRight(indent);
             }
             source += instruction + " ";
@@ -1648,7 +1648,7 @@ namespace AsmConverter
             else
             {
                 operands = new List<string>();
-                for(int i= 0;i<operands.Count;i++)
+                for(int i= 0;i< this.Encodings[lineno].Operands.Count; i++)
                 {
                     var opx = this.GetOperand(lineno, i, clabel, inline);
                     operands.Add(opx);
