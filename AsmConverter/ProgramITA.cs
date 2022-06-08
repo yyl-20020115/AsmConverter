@@ -83,7 +83,11 @@ namespace AsmConverter
         public int Eofs = 0;
         public int State = 0;
         public string Text = "";
-        public string Error = "";
+        public string Error { 
+            get => this.err; 
+            set => this.err = value; 
+        }
+        protected string err = "";
         public bool Inited = false;
         public int Code = 0;
         public TextReader Reader = null;
@@ -124,7 +128,7 @@ namespace AsmConverter
             {
                 ch = '\0';
             }
-            this.CH = (char)ch;
+            this.CH = ch;
             if (ch == '\n')
             {
                 this.Col = 1;
@@ -138,8 +142,8 @@ namespace AsmConverter
         }
         public virtual void Ungetch(int ch) => this.UN = ch;
         public virtual bool IsSpace(char ch) => CIntelToATT.Spaces.Contains(ch);
-        public virtual bool IsAlpha(char ch) => char.IsLetter(ch);
-        public virtual bool IsNumber(char ch) => char.IsDigit(ch);
+        public virtual bool IsLetterOrDigit(char ch) => char.IsLetterOrDigit(ch);
+        public virtual bool IsDigit(char ch) => char.IsDigit(ch);
         public virtual int SkipSpaces()
         {
             var skip = 0;
@@ -174,6 +178,10 @@ namespace AsmConverter
             if (token != null)
             {
                 this.Tokens.Add(token);
+            }
+            else
+            {
+
             }
             return token;
         }
@@ -226,7 +234,7 @@ namespace AsmConverter
                     skip += 1;
                     while (this.CH != '\n' && this.CH != -1)
                     {
-                        memo.Append(this.CH);
+                        memo.Append((char)this.CH);
                         this.GetCh();
                         skip += 1;
                     }
@@ -236,11 +244,11 @@ namespace AsmConverter
                     this.GetCh();
                     if (this.CH == '/')
                     {
-                        memo.Append(this.CH);
+                        memo.Append((char)this.CH);
                         skip += 1;
                         while (this.CH != '\n' && this.CH != -1)
                         {
-                            memo.Append(this.CH);
+                            memo.Append((char)this.CH);
                             this.GetCh();
                             skip += 1;
                         }
@@ -338,7 +346,7 @@ namespace AsmConverter
             if (this.CH < '0' || this.CH > '9') return null;
             CToken token = null;
             var text = "";
-            while (this.IsNumber((char)this.CH) || this.CH == '.')
+            while (this.IsDigit((char)this.CH) || this.CH == '.')
             {
                 text += this.CH;
                 this.GetCh();
@@ -539,12 +547,12 @@ namespace AsmConverter
                 return token;
             }
             // identity or keyword
-            if (this.IsAlpha((char)this.CH)|| CIntelToATT.StartChars.Contains((char)this.CH))
+            if (this.IsLetterOrDigit((char)this.CH)|| CIntelToATT.StartChars.Contains((char)this.CH))
             {
                 row = this.Row;
                 col = this.Col;
                 var text = "";
-                while (this.IsNumber((char)this.CH) || CIntelToATT.StartChars.Contains((char)this.CH))
+                while (this.IsLetterOrDigit((char)this.CH) || CIntelToATT.StartChars.Contains((char)this.CH))
                 {
                     text += (char)this.CH;
                     this.GetCh();
@@ -1334,7 +1342,7 @@ namespace AsmConverter
             return 0;
         }
 
-        public virtual int DoTokenize(TextReader source = null)
+        public virtual int DoTokenize(TextReader source)
         {
             var scanner = new CScanner(source, new());
             var tokens = new List<CToken>();
@@ -1357,7 +1365,7 @@ namespace AsmConverter
             {
                 var size = tokens.Count;
                 var pos = size - 1;
-                foreach (var i in Enumerable.Range(0, size))
+                for(int i = 0; i < size; i++)
                 {
                     if (tokens[i].Mode == CIntelToATT.CTOKEN_ENDL)
                     {
@@ -1377,7 +1385,7 @@ namespace AsmConverter
                 }
                 else
                 {
-                    this.Memos[i] = "";
+                    this.Memos[i] = string.Empty;
                 }
             }
             scanner = null;
