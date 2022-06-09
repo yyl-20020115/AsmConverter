@@ -1,13 +1,13 @@
-    CLD
-    MOV  %%0,%esi
-    MOV  %%1,%edi
-    MOV  %%2,%ecx
+    cld
+    mov  %%0,%esi
+    mov  %%1,%edi
+    mov  %%2,%ecx
 5:    
-    MOV  (%esi,,1),%al
-    INC  %al                ;
-    MOV  %al,(%edi,,1)
-    INC  %esi
-    INC  %edi
-    DEC  %ecx
-    JNZ  5b                 ;
-    RET
+    mov  (%esi,,1),%al
+    inc  %al                ;
+    mov  %al,(%edi,,1)
+    inc  %esi
+    inc  %edi
+    dec  %ecx
+    jnz  5b                 ;
+    ret
