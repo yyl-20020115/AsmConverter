@@ -27,18 +27,18 @@
     ; Compare EAX and ECX. If they are equal then that means the bit wasn't
     ; flipped, and CPUID isn't supported.
     xor eax, ecx
-    jz .NoCPUID
+    jz NoCPUID
     ret
 
     mov eax, 0x80000000    ; Set the A-register to 0x80000000.
     cpuid                  ; CPU identification.
     cmp eax, 0x80000001    ; Compare the A-register with 0x80000001.
-    jb .NoLongMode         ; It is less, there is no long mode.
+    jb NoLongMode         ; It is less, there is no long mode.
 
     mov eax, 0x80000001    ; Set the A-register to 0x80000001.
     cpuid                  ; CPU identification.
     test edx, 1 << 29      ; Test if the LM-bit, which is bit 29, is set in the D-register.
-    jz .NoLongMode         ; They aren't, there is no long mode.
+    jz NoLongMode         ; They aren't, there is no long mode.
 
     mov eax, cr0                                   ; Set the A-register to control register 0.
     and eax, 01111111111111111111111111111111b     ; Clear the PG-bit, which is bit 31.
@@ -61,19 +61,19 @@
     mov ebx, 0x00000003          ; Set the B-register to 0x00000003.
     mov ecx, 512                 ; Set the C-register to 512.
  
-.SetEntry:
+SetEntry:
     mov DWORD [edi], ebx         ; Set the uint32_t at the destination index to the B-register.
     add ebx, 0x1000              ; Add 0x1000 to the B-register.
     add edi, 8                   ; Add eight to the destination index.
-    loop .SetEntry               ; Set the next entry.
+    loop SetEntry               ; Set the next entry.
 
     mov eax, cr4                 ; Set the A-register to control register 4.
     or eax, 1 << 5               ; Set the PAE-bit, which is the 6th bit (bit 5).
     mov cr4, eax                 ; Set control register 4 to the A-register.
 
-    BITS 32
+    ;BITS 32
     mov eax, cr4
-    or eax, (1<<12) ;CR4.LA57
+    or eax, 100000000000b ;CR4.LA57
     mov cr4, eax
 
     mov ecx, 0xC0000080          ; Set the C-register to 0xC0000080, which is the EFER MSR.
@@ -82,28 +82,28 @@
     wrmsr                        ; Write to the model-specific register.
 
 GDT64:                           ; Global Descriptor Table (64-bit).
-    .Null: equ $ - GDT64         ; The null descriptor.
+    Null: equ $ - GDT64         ; The null descriptor.
     dw 0xFFFF                    ; Limit (low).
     dw 0                         ; Base (low).
     db 0                         ; Base (middle)
     db 0                         ; Access.
     db 1                         ; Granularity.
     db 0                         ; Base (high).
-    .Code: equ $ - GDT64         ; The code descriptor.
+    Code: equ $ - GDT64         ; The code descriptor.
     dw 0                         ; Limit (low).
     dw 0                         ; Base (low).
     db 0                         ; Base (middle)
     db 10011010b                 ; Access (exec/read).
     db 10101111b                 ; Granularity, 64 bits flag, limit19:16.
     db 0                         ; Base (high).
-    .Data: equ $ - GDT64         ; The data descriptor.
+    Data: equ $ - GDT64         ; The data descriptor.
     dw 0                         ; Limit (low).
     dw 0                         ; Base (low).
     db 0                         ; Base (middle)
     db 10010010b                 ; Access (read/write).
     db 00000000b                 ; Granularity.
     db 0                         ; Base (high).
-    .Pointer:                    ; The GDT-pointer.
+    Pointer:                    ; The GDT-pointer.
     dw $ - GDT64 - 1             ; Limit.
     dq GDT64                     ; Base.
 
@@ -111,7 +111,7 @@ GDT64:                           ; Global Descriptor Table (64-bit).
     jmp GDT64.Code:Realm64       ; Set the code segment and enter 64-bit long mode.
 
 ; Use 64-bit.
-[BITS 64]
+;[BITS 64]
  
 Realm64:
     cli                           ; Clear the interrupt flag.
@@ -127,8 +127,8 @@ Realm64:
     rep stosq                     ; Clear the screen.
     hlt                           ; Halt the processor.
 
-.NoCPUID:
+NoCPUID:
     hlt  ;If the CPU is incapable of identifying itself, you're in trouble.
 
-.NoLongMode:
-[BITS 32] ;Fallback
+NoLongMode:
+;[BITS 32] ;Fallback

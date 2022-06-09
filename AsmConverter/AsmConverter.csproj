@@ -242,8 +242,4 @@
     <None Remove="ITA_Tests\_version.asm" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="ITA_Tests\small\" />
-  </ItemGroup>
-
 </Project>

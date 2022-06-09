@@ -80,16 +80,10 @@ namespace AsmConverter
         public int UN = -1;
         public int Col = 1;
         public int Row = 1;
-        protected int eofs = 0;
-        public Guid G = Guid.NewGuid();
-        public int EofCount { 
-            get=>this.eofs; 
-            set=>this.eofs=value; 
-        }
+        public int EndOfFileCount = 0;
         public int State = 0;
         public string Text = "";
         public string Error = "";
-        protected string err = "";
         public bool Inited = false;
         public int Code = 0;
         public TextReader Reader;
@@ -105,7 +99,7 @@ namespace AsmConverter
             this.UN = -1;
             this.Col = 0;
             this.Row = 1;
-            this.eofs = 0;
+            this.EndOfFileCount = 0;
             this.State = 0;
             this.Text = "";
             this.Inited = false;
@@ -184,27 +178,6 @@ namespace AsmConverter
             }
             return token;
         }
-        public virtual List<CToken> GetTokens()
-        {
-            var result = new List<CToken>();
-            while (true)
-            {
-                var token = this.Next();
-                if (token == null)
-                {
-                    if (this.Code != 0)
-                    {
-                        var text = string.Format("{0}: {1}", this.Row, this.Error);
-                        throw new Exception(text);
-                    }
-                    break;
-                }
-                result.Add(token);
-                if (token.Mode == CIntelToATT.CTOKEN_ENDF) break;
-            }
-            return result;
-        }
-        public override string ToString() => string.Join(",", this.GetTokens());
     }
     public class CScanner : CTokenizer
     {
@@ -339,6 +312,10 @@ namespace AsmConverter
             token.Col = this.Col;
             return token;
         }
+        public static bool IsHex(char c)
+        {
+            return c >= '0' && c <= '9' || c >= 'A' && c <= 'F' || c >= 'a' && c <= 'f';
+        }
         public virtual CToken ReadNumber()
         {
             object value = 0;
@@ -347,7 +324,17 @@ namespace AsmConverter
             var text = "";
             while (this.IsDigit((char)this.CH) || this.CH == '.')
             {
-                text += this.CH;
+                text += (char)this.CH;
+                this.GetCh();
+            }
+            if (this.CH == 'b' && text.All(t => t == '0' || t == '1'))
+            {
+                text += (char)this.CH;
+                this.GetCh();
+            }
+            else if (this.CH == 'h' && text.All(t => IsHex(t)))
+            {
+                text += (char)this.CH;
                 this.GetCh();
             }
             var pos = text.Length;
@@ -375,7 +362,7 @@ namespace AsmConverter
                 return null;
             }
             char ec1, ec2;
-            if (text.Length - pos == 2)
+            if (text.Length - pos >= 2)
             {
                 ec1 = text[pos - 2];
                 ec2 = text[pos - 1];
@@ -390,8 +377,15 @@ namespace AsmConverter
                 ec1 = '\0';
                 ec2 = '\0';
             }
+            if(text.Length>=2 && text[text.Length - 1] == 'b'
+                && text[..^1].All(t=>t=='0'||t=='1'))
+            {
+                ec1 = 'b';
+                ec2 = '\0';
+                pos = text.Length - 1;
+            }
             text = text[..pos];
-            if (CIntelToATT.HexHeaders.Contains(text[..2]))
+            if (text.Length>=2 && CIntelToATT.HexHeaders.Contains(text[..2]))
             {
                 try
                 {
@@ -466,8 +460,7 @@ namespace AsmConverter
             }
             else
             {
-                var @decimal = !text.Contains(".") ? 1 : 0;
-                if (@decimal != 0)
+                if (!text.Contains("."))
                 {
                     try
                     {
@@ -506,7 +499,7 @@ namespace AsmConverter
         }
         protected void IncreaseEofs()
         {
-            this.eofs = this.eofs+1;
+            this.EndOfFileCount = this.EndOfFileCount+1;
         }
         public override CToken Read()
         {
@@ -527,7 +520,7 @@ namespace AsmConverter
             if (this.CH == -1)
             {
                 this.IncreaseEofs();
-                //if (this.eofs > 1) return token;
+                if (this.EndOfFileCount > 1) return token;
                 token = new (CIntelToATT.CTOKEN_ENDF, 0);
                 token.Row = this.Row;
                 if (comment.Length > 0)
@@ -1340,13 +1333,12 @@ namespace AsmConverter
             var tokens = new List<CToken>();
             while (true)
             {
-                if(scanner.CH == -1)
-                {
-
-                }
+                var last = scanner.Row;
                 var token = scanner.Next();
                 if (token == null)
                 {
+                    int c = scanner.CH;
+
                     this.Error = string.Format("{0}: {1}", scanner.Row, scanner.Error);
                     return -1;
                 }
