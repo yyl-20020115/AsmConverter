@@ -6,7 +6,7 @@ inside the gmp project into Intel syntax which nasm supports.
 
 This purpose is fullfilled. 
 Your help is well-welcomed to improve this project.
-And the Intel to AT&T conversion needs to be done as well.
+And the Intel to AT&T conversion needs to be verified by more tests as well.
 
 Best Regards,
 Yilin
